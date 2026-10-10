@@ -7,6 +7,71 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
 const baseWebpackConfig = getConfig({ baseOnly: true });
+// Bundle the CMS core from source instead of its UMD artifact. The UMD artifact
+// expects window.DecapCmsCore, which is not available in the standalone editor.
+baseWebpackConfig.resolve = {
+  ...baseWebpackConfig.resolve,
+  alias: {
+    ...baseWebpackConfig.resolve.alias,
+    'decap-cms-core
+
+const isProduction = process.env.NODE_ENV === 'production';
+console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
+
+const devServerPort = parseInt(process.env.DECAP_CMS_DEV_SERVER_PORT || `${8080}`);
+
+const baseConfig = {
+  ...baseWebpackConfig,
+  plugins: [
+    ...Object.entries(plugins)
+      .filter(([key]) => key !== 'friendlyErrors')
+      .map(([, plugin]) => plugin()),
+    new webpack.DefinePlugin({
+      DECAP_CMS_VERSION: JSON.stringify(`${pkg.version}${isProduction ? '' : '-dev'}`),
+    }),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: [`Decap CMS is now running at http://localhost:${devServerPort}`],
+      },
+    }),
+    new CopyWebpackPlugin({ patterns: [{ from: './shims/cms.css', to: './' }] }),
+  ],
+  devServer: {
+    static: '../../dev-test',
+    devMiddleware: {
+      publicPath: '/dist/',
+    },
+    host: '0.0.0.0',
+    port: devServerPort,
+    client: {
+      overlay: false,
+    },
+  },
+};
+
+if (isProduction) {
+  module.exports = [
+    baseConfig,
+
+    /**
+     * Output the same script a second time, but named `cms.js`, and with a
+     * deprecation notice.
+     */
+    {
+      ...baseConfig,
+      entry: ['./shims/deprecate-old-dist.js', baseConfig.entry],
+      output: {
+        ...baseConfig.output,
+        filename: 'cms.js',
+      },
+    },
+  ];
+} else {
+  module.exports = baseConfig;
+}
+: path.resolve(__dirname, '../decap-cms-core/src/index.js'),
+  },
+};
 
 const isProduction = process.env.NODE_ENV === 'production';
 console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
