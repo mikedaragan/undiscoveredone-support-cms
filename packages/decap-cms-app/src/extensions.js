@@ -1,16 +1,5 @@
 // Core
 import { DecapCmsCore as CMS } from 'decap-cms-core';
-// Backends
-import { AzureBackend } from 'decap-cms-backend-azure';
-import { AwsCognitoGitHubProxyBackend } from 'decap-cms-backend-aws-cognito-github-proxy';
-import { GitHubBackend } from 'decap-cms-backend-github';
-import { GitLabBackend } from 'decap-cms-backend-gitlab';
-import { GiteaBackend } from 'decap-cms-backend-gitea';
-import { ForgejoBackend } from 'decap-cms-backend-forgejo';
-import { GitGatewayBackend } from 'decap-cms-backend-git-gateway';
-import { BitbucketBackend } from 'decap-cms-backend-bitbucket';
-import { TestBackend } from 'decap-cms-backend-test';
-import { ProxyBackend } from 'decap-cms-backend-proxy';
 // Widgets
 import DecapCmsWidgetString from 'decap-cms-widget-string';
 import DecapCmsWidgetNumber from 'decap-cms-widget-number';
@@ -36,18 +25,8 @@ import * as locales from 'decap-cms-locales';
 
 import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
 
-// Register all the things
-CMS.registerBackend('git-gateway', GitGatewayBackend);
-CMS.registerBackend('azure', AzureBackend);
-CMS.registerBackend('aws-cognito-github-proxy', AwsCognitoGitHubProxyBackend);
-CMS.registerBackend('github', GitHubBackend);
+// Register only the Supabase backend used by the Support Editor.
 CMS.registerBackend('supabase', SupabaseBackend);
-CMS.registerBackend('gitlab', GitLabBackend);
-CMS.registerBackend('gitea', GiteaBackend);
-CMS.registerBackend('forgejo', ForgejoBackend);
-CMS.registerBackend('bitbucket', BitbucketBackend);
-CMS.registerBackend('test-repo', TestBackend);
-CMS.registerBackend('proxy', ProxyBackend);
 CMS.registerWidget([
   DecapCmsWidgetString.Widget(),
   DecapCmsWidgetNumber.Widget(),
