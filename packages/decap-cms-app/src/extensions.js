@@ -11,7 +11,6 @@ import { GitGatewayBackend } from 'decap-cms-backend-git-gateway';
 import { BitbucketBackend } from 'decap-cms-backend-bitbucket';
 import { TestBackend } from 'decap-cms-backend-test';
 import { ProxyBackend } from 'decap-cms-backend-proxy';
-import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
 // Widgets
 import DecapCmsWidgetString from 'decap-cms-widget-string';
 import DecapCmsWidgetNumber from 'decap-cms-widget-number';
@@ -34,6 +33,8 @@ import DecapCmsWidgetUuid from 'decap-cms-widget-uuid';
 import image from 'decap-cms-editor-component-image';
 // Locales
 import * as locales from 'decap-cms-locales';
+
+import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
 
 // Register all the things
 CMS.registerBackend('git-gateway', GitGatewayBackend);
