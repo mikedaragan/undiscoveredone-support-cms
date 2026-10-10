@@ -1,0 +1,50 @@
+name: Support editor staging build
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'deployment/support-editor/**'
+      - 'packages/decap-cms-app/src/**'
+      - 'packages/decap-cms/src/**'
+      - '.github/workflows/support-editor-staging.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build Decap fork
+        run: pnpm --filter decap-cms... build
+      - name: Package staging editor
+        env:
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPPORT_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          mkdir -p staging
+          cp deployment/support-editor/index.html staging/index.html
+          cp deployment/support-editor/config.yml staging/config.yml
+          cp packages/decap-cms/dist/decap-cms.js staging/decap-cms.js
+          if [ -z "$SUPABASE_PUBLISHABLE_KEY" ]; then
+            echo "::error::SUPPORT_SUPABASE_PUBLISHABLE_KEY must be configured before staging."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p = Path('staging/config.yml')
+          value = os.environ['SUPABASE_PUBLISHABLE_KEY']
+          assert '\n' not in value and '\r' not in value
+          p.write_text(p.read_text().replace('REPLACE_WITH_PUBLIC_PUBLISHABLE_KEY', value))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: support-editor-staging
+          path: staging/
+          retention-days: 7
