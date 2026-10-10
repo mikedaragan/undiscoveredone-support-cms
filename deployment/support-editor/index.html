@@ -5,8 +5,46 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
 <title>Undiscovered One · Support Editor</title>
+<style>
+  #startup-status { font: 15px/1.5 system-ui,sans-serif; color: #20252b; padding: 28px; max-width: 720px; margin: 12vh auto; }
+  #startup-status pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f4f6; padding: 12px; border-radius: 8px; }
+</style>
+<script>
+(function () {
+  var timer;
+  function show(message) {
+    var status = document.getElementById('startup-status');
+    if (!status) { document.addEventListener('DOMContentLoaded', function () { show(message); }, { once: true }); return; }
+    status.hidden = false;
+    status.innerHTML = '';
+    var heading = document.createElement('h2');
+    heading.textContent = 'Support Editor startup diagnostic';
+    var detail = document.createElement('pre');
+    detail.textContent = message;
+    status.appendChild(heading);
+    status.appendChild(detail);
+  }
+  window.addEventListener('error', function (event) {
+    show('JavaScript error: ' + (event.message || 'Unknown error') + '\n' + (event.filename || '') + ':' + (event.lineno || '') + ':' + (event.colno || ''));
+  });
+  window.addEventListener('unhandledrejection', function (event) {
+    var reason = event.reason;
+    show('Startup promise rejected: ' + (reason && (reason.stack || reason.message) || String(reason)));
+  });
+  window.addEventListener('DOMContentLoaded', function () {
+    timer = setTimeout(function () {
+      if (!document.querySelector('#nc-root, #root, [class*="App_main"], [class*="App_app"]') &&
+          document.body.children.length <= 2) {
+        show('The CMS script was requested but no application interface appeared within 8 seconds. Check that the bundle initializes correctly.');
+      }
+    }, 8000);
+  });
+  window.supportEditorScriptFailed = function () { show('Could not load decap-cms.js. Check the deployed build assets.'); };
+})();
+</script>
 </head>
 <body>
-<script src="./decap-cms.js"></script>
+<div id="startup-status" hidden></div>
+<script src="./decap-cms.js" onerror="supportEditorScriptFailed()"></script>
 </body>
 </html>
