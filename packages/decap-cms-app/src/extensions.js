@@ -21,7 +21,7 @@ import DecapCmsWidgetUuid from '../../decap-cms-widget-uuid/src/index.js';
 // Editor Components
 import image from '../../decap-cms-editor-component-image/src/index.js';
 // Locales
-import * as locales from 'decap-cms-locales';
+import * as locales from '../../decap-cms-locales/src/index.js';
 
 import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
 
