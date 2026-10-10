@@ -5,7 +5,7 @@ export default function SupabaseAuthenticationPage({ onLogin, inProgress, config
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [working, setWorking] = useState(false);
-  const backend = config?.getIn ? config.getIn(['backend'])?.toJS?.() : config?.backend;
+  const backend = config?.backend?.toJS?.() || config?.backend || {};
   const url = backend?.supabase_url;
   const key = backend?.supabase_anon_key;
   async function submit(event) {
