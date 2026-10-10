@@ -26,3 +26,5 @@ Do not expose Supabase service-role credentials in client JavaScript. The adapte
 ## Deployment
 
 Not deployed. The live Support Center is unchanged.
+
+Cloudflare Pages deployment trigger: 2026-10-10. This documentation-only commit requests a fresh build from the feature branch; no production Support Center changes.
