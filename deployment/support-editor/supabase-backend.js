@@ -3,7 +3,7 @@
  * Register using CMS.registerBackend('supabase', SupabaseBackend).
  * Not yet wired into the production bundle.
  */
-import SupabaseAuthenticationPage from '../../packages/decap-cms-app/src/SupabaseAuthenticationPage';
+import SupabaseAuthenticationPage from '../../packages/decap-cms-app/src/SupabaseAuthenticationPage.jsx';
 
 const escapeYaml = value => JSON.stringify(value ?? '');
 const slugFromPath = path => (path.split('/').pop() || '').replace(/\.(md|markdown)$/i, '');
