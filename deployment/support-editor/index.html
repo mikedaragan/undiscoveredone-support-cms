@@ -12,6 +12,21 @@
 <script>
 (function(){
   var stage='HTML loaded',errors=[],started=Date.now();
+  // Capture the exact invalid DOM tag used during authenticated React rendering.
+  // The native InvalidCharacterError otherwise hides the tag name in minified builds.
+  var nativeCreateElement = Document.prototype.createElement;
+  Document.prototype.createElement = function(tagName, options) {
+    try {
+      return nativeCreateElement.apply(this, arguments);
+    } catch (error) {
+      if (error && error.name === 'InvalidCharacterError') {
+        window.__supportInvalidTag = String(tagName);
+        window.__supportInvalidTagStack = (new Error('Invalid element requested: '+String(tagName))).stack;
+      }
+      throw error;
+    }
+  };
+
   function status(){
     var el=document.getElementById('support-diagnostics');
     if(!el)return;
