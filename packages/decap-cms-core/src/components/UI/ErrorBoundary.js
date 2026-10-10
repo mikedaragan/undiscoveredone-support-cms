@@ -204,7 +204,8 @@ export class ErrorBoundary extends Component {
         </p>
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
-        <p>{errorMessage}</p>
+        <p><strong>Error: {errorTitle}</strong></p>
+        <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>{errorMessage}</pre>
         {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
       </ErrorBoundaryContainer>
     );
