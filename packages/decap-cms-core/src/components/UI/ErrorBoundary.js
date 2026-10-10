@@ -205,6 +205,11 @@ export class ErrorBoundary extends Component {
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
         <p><strong>Error: {errorTitle}</strong></p>
+        {typeof window !== 'undefined' && window.__supportInvalidTag && (
+          <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+            {'Invalid DOM element: ' + window.__supportInvalidTag + '\n' + (window.__supportInvalidTagStack || '')}
+          </pre>
+        )}
         <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>{errorMessage}</pre>
         {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
       </ErrorBoundaryContainer>
