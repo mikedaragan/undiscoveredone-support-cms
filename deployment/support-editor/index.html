@@ -20,7 +20,7 @@
       return nativeCreateElement.apply(this, arguments);
     } catch (error) {
       if (error && error.name === 'InvalidCharacterError') {
-        window.__supportInvalidTag = String(tagName);
+        window.__supportInvalidTag = String(tagName); error.message = 'Invalid DOM tag '+String(tagName)+': '+error.message;
         window.__supportInvalidTagStack = (new Error('Invalid element requested: '+String(tagName))).stack;
       }
       throw error;
