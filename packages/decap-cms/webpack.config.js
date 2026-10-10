@@ -7,13 +7,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
 const baseWebpackConfig = getConfig({ baseOnly: true });
-// Bundle the CMS core from source instead of its UMD artifact. The UMD artifact
-// expects window.DecapCmsCore, which is not available in the standalone editor.
+// Use the source version of the core module for the standalone support bundle.
 baseWebpackConfig.resolve = {
   ...baseWebpackConfig.resolve,
   alias: {
     ...baseWebpackConfig.resolve.alias,
-    'decap-cms-core = process.env.NODE_ENV === 'production';
+    'decap-cms-core$': path.resolve(__dirname, '../decap-cms-core/src/index.js'),
+  },
+};
+
+const isProduction = process.env.NODE_ENV === 'production';
 console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
 
 const devServerPort = parseInt(process.env.DECAP_CMS_DEV_SERVER_PORT || `${8080}`);
