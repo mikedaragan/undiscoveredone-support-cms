@@ -6,45 +6,42 @@
 <meta name="robots" content="noindex,nofollow" />
 <title>Undiscovered One · Support Editor</title>
 <style>
-  #startup-status { font: 15px/1.5 system-ui,sans-serif; color: #20252b; padding: 28px; max-width: 720px; margin: 12vh auto; }
-  #startup-status pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f4f6; padding: 12px; border-radius: 8px; }
+#support-diagnostics {position:fixed;inset:0;z-index:2147483647;background:#fff;color:#18212c;padding:24px;font:15px/1.5 system-ui,sans-serif;overflow:auto}
+#support-diagnostics pre {white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f4f7;padding:12px;border-radius:8px}
 </style>
 <script>
-(function () {
-  var timer;
-  function show(message) {
-    var status = document.getElementById('startup-status');
-    if (!status) { document.addEventListener('DOMContentLoaded', function () { show(message); }, { once: true }); return; }
-    status.hidden = false;
-    status.innerHTML = '';
-    var heading = document.createElement('h2');
-    heading.textContent = 'Support Editor startup diagnostic';
-    var detail = document.createElement('pre');
-    detail.textContent = message;
-    status.appendChild(heading);
-    status.appendChild(detail);
+(function(){
+  var stage='HTML loaded',errors=[],started=Date.now();
+  function status(){
+    var el=document.getElementById('support-diagnostics');
+    if(!el)return;
+    var detail=document.getElementById('support-diagnostic-detail');
+    if(detail)detail.textContent='Stage: '+stage+'\nElapsed: '+Math.round((Date.now()-started)/1000)+' seconds\n'+(errors.join('\n')||'No JavaScript error captured');
   }
-  window.addEventListener('error', function (event) {
-    show('JavaScript error: ' + (event.message || 'Unknown error') + '\n' + (event.filename || '') + ':' + (event.lineno || '') + ':' + (event.colno || ''));
+  function failure(message){errors.push(message);stage='Error detected';status();}
+  window.addEventListener('error',function(e){failure('Error: '+(e.message||'unknown')+' at '+(e.filename||'inline')+':'+(e.lineno||0));});
+  window.addEventListener('unhandledrejection',function(e){var r=e.reason;failure('Rejected promise: '+(r&&(r.stack||r.message)||String(r)));});
+  window.supportEditorScriptLoaded=function(){stage='CMS script downloaded';status();};
+  window.supportEditorScriptFailed=function(){failure('Could not download decap-cms.js');};
+  window.addEventListener('DOMContentLoaded',function(){
+    status();
+    setTimeout(function(){
+      var root=document.querySelector('#nc-root, #root');
+      var content=root&&root.textContent&&root.textContent.trim();
+      var appVisible=!!(content&&content.length>5);
+      if(appVisible&&!errors.length){document.getElementById('support-diagnostics').style.display='none';}
+      else {stage=appVisible?'CMS generated content, but an error occurred':'CMS has not rendered visible content';status();}
+    },10000);
   });
-  window.addEventListener('unhandledrejection', function (event) {
-    var reason = event.reason;
-    show('Startup promise rejected: ' + (reason && (reason.stack || reason.message) || String(reason)));
-  });
-  window.addEventListener('DOMContentLoaded', function () {
-    timer = setTimeout(function () {
-      if (!document.querySelector('#nc-root, #root, [class*="App_main"], [class*="App_app"]') &&
-          document.body.children.length <= 2) {
-        show('The CMS script was requested but no application interface appeared within 8 seconds. Check that the bundle initializes correctly.');
-      }
-    }, 8000);
-  });
-  window.supportEditorScriptFailed = function () { show('Could not load decap-cms.js. Check the deployed build assets.'); };
 })();
 </script>
 </head>
 <body>
-<div id="startup-status" hidden></div>
-<script src="./decap-cms.js" onerror="supportEditorScriptFailed()"></script>
+<div id="support-diagnostics" role="status">
+<h2>Undiscovered One Support Editor</h2>
+<p>Checking the CMS startup. This panel will disappear when the editor loads successfully.</p>
+<pre id="support-diagnostic-detail">Stage: HTML loaded</pre>
+</div>
+<script src="./decap-cms.js" onload="supportEditorScriptLoaded()" onerror="supportEditorScriptFailed()"></script>
 </body>
 </html>
