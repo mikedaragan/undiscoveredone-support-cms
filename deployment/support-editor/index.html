@@ -47,13 +47,23 @@
   window.supportEditorScriptFailed=function(){failure('Could not download decap-cms.js');};
   window.addEventListener('DOMContentLoaded',function(){
     status();
-    setTimeout(function(){
+    var checks=0;
+    var check=setInterval(function(){
+      checks++;
       var root=document.querySelector('#nc-root, #root');
       var content=root&&root.textContent&&root.textContent.trim();
       var appVisible=!!(content&&content.length>5);
-      if(appVisible&&!errors.length){document.getElementById('support-diagnostics').style.display='none';}
-      else {stage=appVisible?'CMS generated content, but an error occurred':'CMS has not rendered visible content';status();}
-    },10000);
+      if(appVisible&&!errors.length){
+        document.getElementById('support-diagnostics').style.display='none';
+        clearInterval(check);
+      }else if(checks>=30){
+        if(!errors.length){stage='CMS has not rendered visible content after 30 seconds';status();}
+        clearInterval(check);
+      }else if(checks%5===0&&!errors.length){
+        stage='Waiting for CMS render ('+checks+' seconds)';
+        status();
+      }
+    },1000);
   });
 })();
 </script>
