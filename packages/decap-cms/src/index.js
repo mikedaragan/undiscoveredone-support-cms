@@ -1,5 +1,5 @@
 import createReactClass from 'create-react-class';
-import { DecapCmsApp as CMS } from 'decap-cms-app';
+import { DecapCmsApp as CMS } from '../../decap-cms-app/src/index.js';
 import { createElement } from 'react';
 import './extensions';
 
