@@ -3,6 +3,8 @@
  * Register using CMS.registerBackend('supabase', SupabaseBackend).
  * Not yet wired into the production bundle.
  */
+import SupabaseAuthenticationPage from '../../packages/decap-cms-app/src/SupabaseAuthenticationPage';
+
 const escapeYaml = value => JSON.stringify(value ?? '');
 const slugFromPath = path => (path.split('/').pop() || '').replace(/\.(md|markdown)$/i, '');
 const yaml = row => [
@@ -35,7 +37,7 @@ export default class SupabaseBackend {
     if (!/^https:\/\//.test(this.url) || !this.key) throw new Error('Supabase URL and publishable key required');
     this.session = null;
   }
-  authComponent() { return null; }
+  authComponent() { return SupabaseAuthenticationPage; }
   async request(path, options = {}) {
     const response = await fetch(this.url + path, {
       ...options,
