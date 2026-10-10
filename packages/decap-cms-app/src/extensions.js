@@ -1,5 +1,5 @@
 // Core
-import { DecapCmsCore as CMS } from 'decap-cms-core';
+import { DecapCmsCore as CMS } from '../../decap-cms-core/src/index.js';
 // Widgets
 import DecapCmsWidgetString from 'decap-cms-widget-string';
 import DecapCmsWidgetNumber from 'decap-cms-widget-number';
