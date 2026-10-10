@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function SupabaseAuthenticationPage({ onLogin, inProgress, config }) {
   const [email, setEmail] = useState('');
