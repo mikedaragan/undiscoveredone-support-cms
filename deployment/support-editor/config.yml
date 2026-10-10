@@ -1,25 +1,25 @@
-# Draft only. Do not deploy publicly until GitHub OAuth and Access are configured.
+# Development only. Requires a built fork bundle and Supabase Auth UI.
 backend:
-  name: github
-  repo: mikedaragan/undiscoveredone-support-content
-  branch: main
-  # base_url: https://YOUR-OAUTH-BROKER.example.com
-  # auth_endpoint: auth
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
-publish: false
+  name: supabase
+  supabase_url: https://pqinsgsatlsofpstdaie.supabase.co
+  # Set to the project's PUBLIC publishable key before staging.
+  supabase_anon_key: REPLACE_WITH_PUBLIC_PUBLISHABLE_KEY
+
+publish: true
+media_folder: "support-images"
+public_folder: "/support-images"
 collections:
   - name: help
     label: Help Articles
     folder: articles
     create: true
+    delete: true
     slug: "{{slug}}"
     extension: md
     format: frontmatter
     fields:
       - { label: Title, name: title, widget: string }
       - { label: Summary, name: summary, widget: text, required: false }
-      - { label: Category, name: category, widget: select, options: ["Accounts", "Music", "Music Plus", "Digital Ownership", "Creators", "Purchases", "Troubleshooting"] }
-      - { label: Draft, name: draft, widget: boolean, default: true }
-      - { label: Updated, name: updated_at, widget: datetime }
+      - { label: Category, name: category, widget: string, required: false }
+      - { label: Status, name: status, widget: select, options: [draft, published, archived], default: draft }
       - { label: Body, name: body, widget: markdown }
