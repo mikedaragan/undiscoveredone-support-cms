@@ -11,6 +11,7 @@ import { GitGatewayBackend } from 'decap-cms-backend-git-gateway';
 import { BitbucketBackend } from 'decap-cms-backend-bitbucket';
 import { TestBackend } from 'decap-cms-backend-test';
 import { ProxyBackend } from 'decap-cms-backend-proxy';
+import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
 // Widgets
 import DecapCmsWidgetString from 'decap-cms-widget-string';
 import DecapCmsWidgetNumber from 'decap-cms-widget-number';
@@ -39,6 +40,7 @@ CMS.registerBackend('git-gateway', GitGatewayBackend);
 CMS.registerBackend('azure', AzureBackend);
 CMS.registerBackend('aws-cognito-github-proxy', AwsCognitoGitHubProxyBackend);
 CMS.registerBackend('github', GitHubBackend);
+CMS.registerBackend('supabase', SupabaseBackend);
 CMS.registerBackend('gitlab', GitLabBackend);
 CMS.registerBackend('gitea', GiteaBackend);
 CMS.registerBackend('forgejo', ForgejoBackend);
