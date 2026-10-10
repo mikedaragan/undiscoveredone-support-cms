@@ -20,7 +20,29 @@
   }
   function failure(message){errors.push(message);stage='Error detected';status();}
   window.addEventListener('error',function(e){failure('Error: '+(e.message||'unknown')+' at '+(e.filename||'inline')+':'+(e.lineno||0));});
-  window.addEventListener('unhandledrejection',function(e){var r=e.reason;failure('Rejected promise: '+(r&&(r.stack||r.message)||String(r)));});
+  window.addEventListener('unhandledrejection',function(e){
+    var r=e.reason;
+    var description;
+    try {
+      if(r==null) description=String(r);
+      else if(typeof r==='string') description=r;
+      else {
+        var details=[];
+        details.push('type: '+Object.prototype.toString.call(r));
+        details.push('name: '+String(r.name||'unknown'));
+        details.push('message: '+String(r.message||'not provided'));
+        if(r.status)details.push('status: '+String(r.status));
+        if(r.statusText)details.push('statusText: '+String(r.statusText));
+        if(r.url)details.push('url: '+String(r.url));
+        if(r.response&&r.response.status)details.push('response status: '+String(r.response.status));
+        if(r.stack)details.push('stack: '+String(r.stack));
+        try { details.push('keys: '+Object.keys(r).join(', ')); } catch(ignore){}
+        try { details.push('JSON: '+JSON.stringify(r)); } catch(ignore){}
+        description=details.join('\\n');
+      }
+    }catch(error){description='Could not describe rejection: '+String(error);}
+    failure('Rejected promise:\\n'+description);
+  });
   window.supportEditorScriptLoaded=function(){stage='CMS script downloaded';status();};
   window.supportEditorScriptFailed=function(){failure('Could not download decap-cms.js');};
   window.addEventListener('DOMContentLoaded',function(){
