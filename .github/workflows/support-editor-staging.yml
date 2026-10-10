@@ -6,6 +6,7 @@ on:
       - 'deployment/support-editor/**'
       - 'packages/decap-cms-app/src/**'
       - 'packages/decap-cms/src/**'
+      - 'packages/decap-cms/webpack.config.js'
       - '.github/workflows/support-editor-staging.yml'
 jobs:
   build:
@@ -21,6 +22,8 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Validate Webpack configuration syntax
+        run: node --check packages/decap-cms/webpack.config.js
       - name: Build Decap fork
         run: pnpm --filter decap-cms... build
       - name: Package staging editor
