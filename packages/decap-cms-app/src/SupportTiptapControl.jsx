@@ -51,6 +51,21 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   });
 
   React.useEffect(() => {
+    if (!editor) return undefined;
+    const insert = () => setShowTools(open => !open);
+    const undo = () => editor.chain().focus().undo().run();
+    const redo = () => editor.chain().focus().redo().run();
+    window.addEventListener('uo-support-toggle-insert', insert);
+    window.addEventListener('uo-support-undo', undo);
+    window.addEventListener('uo-support-redo', redo);
+    return () => {
+      window.removeEventListener('uo-support-toggle-insert', insert);
+      window.removeEventListener('uo-support-undo', undo);
+      window.removeEventListener('uo-support-redo', redo);
+    };
+  }, [editor]);
+
+  React.useEffect(() => {
     if (!editor) return;
     const next = value || '';
     if (!editor.isFocused && editor.getMarkdown() !== next) {
@@ -72,7 +87,6 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
-      <button type="button" onClick={() => setShowTools(open => !open)} aria-expanded={showTools} style={{ background: "white", border: "1px solid #dfe7e8", borderRadius: 7, padding: "7px 12px", marginBottom: 12, cursor: "pointer", color: "#34484b" }}>{showTools ? "Hide formatting" : "+ Format / insert"}</button>
       {showTools && <div role="toolbar" aria-label="Article formatting" style={{ display: 'flex', gap: 3, flexWrap: 'wrap', padding: 9, border: '1px solid #e8edef', borderRadius: 8, marginBottom: 12 }}>
         <Command editor={editor} label="Paragraph" action={e => e.chain().focus().setParagraph().run()} />
         <Command editor={editor} label="H2" action={e => e.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive('heading', { level: 2 })} />
