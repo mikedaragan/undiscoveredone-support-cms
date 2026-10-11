@@ -117,6 +117,12 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
 
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
+  flex-shrink: 0;
+  @media (max-width: 700px) {
+    padding: 0 12px;
+    border-right-width: 0;
+    > div:last-child { display: none; }
+  }
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -146,6 +152,7 @@ const BackArrow = styled.div`
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
+  @media (max-width: 700px) { margin-right: 0; }
 `;
 
 const BackCollection = styled.div`
@@ -692,7 +699,7 @@ export class EditorToolbar extends Component {
 
     return (
       <ToolbarContainer>
-        <ToolbarSectionBackLink to={editorBackLink}>
+        <ToolbarSectionBackLink to={editorBackLink} aria-label="Back to articles" title="Back to articles">
           <BackArrow>←</BackArrow>
           <div>
             <BackCollection>
