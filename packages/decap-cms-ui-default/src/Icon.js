@@ -52,17 +52,20 @@ const sizes = {
 };
 
 function Icon({ type, direction, size = 'medium', className }) {
-  const IconSvg = icons[type].image;
-  // inline-react-svg stores root SVG attributes here, but React 19 no longer applies them.
-  const iconProps = IconSvg.defaultProps || {};
+  const icon = icons[type];
+  if (!icon) return null;
+  const IconSvg = icon.image;
+  const isMarkup = typeof IconSvg === 'string';
+  const iconProps = !isMarkup ? IconSvg.defaultProps || {} : {};
 
   return (
     <IconWrapper
       className={className}
       size={sizes[size] || size}
-      rotation={getRotation(icons[type].direction, direction)}
+      rotation={getRotation(icon.direction, direction)}
+      {...(isMarkup ? { dangerouslySetInnerHTML: { __html: IconSvg } } : {})}
     >
-      <IconSvg {...iconProps} />
+      {!isMarkup && <IconSvg {...iconProps} />}
     </IconWrapper>
   );
 }
