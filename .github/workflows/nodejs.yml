@@ -62,7 +62,7 @@ jobs:
   e2e-build:
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: depot-ubuntu-24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -101,7 +101,7 @@ jobs:
   e2e:
     needs: [changes, e2e-build]
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: depot-ubuntu-24.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     strategy:
       fail-fast: false
