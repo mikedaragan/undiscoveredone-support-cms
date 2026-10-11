@@ -47,14 +47,14 @@ describe('Support Manager Sidebar', () => {
   });
 
   it('opens and closes the mobile navigation on the toggle event', () => {
-    const { container, getAllByRole } = renderSidebar();
+    const { container, getAllByLabelText } = renderSidebar();
 
     act(() => {
       window.dispatchEvent(new Event('uo-support-toggle-navigation'));
     });
     expect(container.querySelector('#support-mobile-navigation')).toHaveClass('mobile-open');
 
-    fireEvent.click(getAllByRole('button', { name: 'Close navigation' })[0]);
+    fireEvent.click(getAllByLabelText('Close navigation')[0]);
     expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
 
