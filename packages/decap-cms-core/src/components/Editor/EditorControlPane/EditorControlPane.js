@@ -275,33 +275,143 @@ export default class ControlPane extends Component {
       const titleText = typeof titleValue === 'string' ? titleValue : '';
       return (
         <div className="uo-support-workspace" css={css`
-          background:#fff; min-height:calc(100vh - 165px);
-          .uo-support-workspace-header { display:none; }
-          .uo-support-settings-toggle { border:1px solid #d7e2e4; border-radius:7px; padding:9px 13px; background:white; color:#254044; cursor:pointer; font-weight:600; }
-          .uo-support-workspace-grid { display:grid; grid-template-columns:minmax(0,1fr) 300px; min-height:calc(100vh - 225px); }
-          .uo-support-workspace-grid.settings-closed { grid-template-columns:minmax(0,1fr); }
-          .uo-support-document { box-sizing:border-box; min-width:0; width:100%; max-width:860px; margin:0 auto; padding:clamp(28px,5vw,76px) clamp(20px,5vw,70px) 90px; }
-          .uo-support-title { position:relative; margin-bottom:18px; }
-          .uo-support-title > .uo-title-floating-label { position:absolute; top:15px; left:0; z-index:1; pointer-events:none; color:#9aa5a8; font-size:clamp(34px,4vw,56px); transition:all .15s ease; }
-          .uo-support-title:focus-within > .uo-title-floating-label, .uo-support-title.has-value > .uo-title-floating-label { opacity:0; }
-          .uo-support-title label { display:none!important; }
-          .uo-support-title input { box-sizing:border-box!important; display:block!important; width:100%!important; min-height:88px!important; font-size:clamp(34px,4vw,56px)!important; font-weight:500!important; line-height:1.2!important; background:#fff!important; border:0!important; border-radius:0!important; box-shadow:none!important; padding:8px 0!important; height:auto!important; color:#20383c!important; }
-          .uo-support-title input:focus { outline:none!important; box-shadow:none!important; }
-          .uo-support-title input::placeholder { color:transparent!important; }
-          .uo-support-body { min-height:350px; }
-          .uo-support-body > div { width:100%; }
-          .uo-support-body label { display:none!important; }
-          .uo-support-settings { box-sizing:border-box; background:#fff; border-left:1px solid #e3e8ea; padding:0 20px 24px; min-width:0; }
-          .uo-support-settings-tabs { display:flex; gap:24px; border-bottom:1px solid #e3e8ea; margin:0 -20px 20px; padding:0 20px; }
-          .uo-support-settings-tabs span { padding:16px 2px 12px; font-size:14px; font-weight:650; border-bottom:2px solid #00a896; }
-          .uo-support-settings textarea { max-width:100%; }
-          @media(max-width:800px) {
-            .uo-support-workspace-header { position:sticky; top:0; z-index:5; background:white; }
-            .uo-support-workspace-grid, .uo-support-workspace-grid.settings-closed { display:flex; flex-direction:column; }
-            .uo-support-document { order:1; padding:35px 20px 70px; }
-            .uo-support-settings { order:0; border-left:0; border-bottom:1px solid #e3e8ea; width:100%; padding:0 18px 18px; }
-            .uo-support-settings-tabs { padding:0 18px; margin:0 -18px 14px; }
-          }
+  background: #fff;
+  min-height: calc(100vh - 165px);
+
+  .uo-support-workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    min-height: calc(100vh - 225px);
+  }
+
+  .uo-support-workspace-grid.settings-closed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .uo-support-document {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 76px) clamp(20px, 5vw, 70px) 90px;
+  }
+
+  .uo-support-title {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .uo-support-title > .uo-title-floating-label {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+    color: #9aa5a8;
+    font-size: clamp(34px, 4vw, 56px);
+    transition: all 0.15s ease;
+  }
+
+  .uo-support-title:focus-within > .uo-title-floating-label,
+  .uo-support-title.has-value > .uo-title-floating-label {
+    opacity: 0;
+  }
+
+  .uo-support-title label {
+    display: none !important;
+  }
+
+  .uo-support-title input {
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    min-height: 88px !important;
+    font-size: clamp(34px, 4vw, 56px) !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 0 !important;
+    height: auto !important;
+    color: #20383c !important;
+  }
+
+  .uo-support-title input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .uo-support-title input::placeholder {
+    color: transparent !important;
+  }
+
+  .uo-support-body {
+    min-height: 350px;
+  }
+
+  .uo-support-body > div {
+    width: 100%;
+  }
+
+  .uo-support-body label {
+    display: none !important;
+  }
+
+  .uo-support-settings {
+    box-sizing: border-box;
+    background: #fff;
+    border-left: 1px solid #e3e8ea;
+    padding: 0 20px 24px;
+    min-width: 0;
+  }
+
+  .uo-support-settings-tabs {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid #e3e8ea;
+    margin: 0 -20px 20px;
+    padding: 0 20px;
+  }
+
+  .uo-support-settings-tabs span {
+    padding: 16px 2px 12px;
+    font-size: 14px;
+    font-weight: 650;
+    border-bottom: 2px solid #5265a8;
+  }
+
+  .uo-support-settings textarea {
+    max-width: 100%;
+  }
+
+  @media (max-width: 800px) {
+    .uo-support-workspace-grid,
+    .uo-support-workspace-grid.settings-closed {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .uo-support-document {
+      order: 1;
+      padding: 35px 20px 70px;
+    }
+
+    .uo-support-settings {
+      order: 0;
+      border-left: 0;
+      border-bottom: 1px solid #e3e8ea;
+      width: 100%;
+      padding: 0 18px 18px;
+    }
+
+    .uo-support-settings-tabs {
+      padding: 0 18px;
+      margin: 0 -18px 14px;
+    }
+  }
         `}>
           <div className={`uo-support-workspace-grid ${this.state.supportSettingsOpen ? '' : 'settings-closed'}`}>
             <main className="uo-support-document" aria-label="Article editor">
