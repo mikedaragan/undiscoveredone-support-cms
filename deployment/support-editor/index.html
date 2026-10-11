@@ -5,72 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
 <title>Undiscovered One · Support Manager</title>
-<style id="uo-support-style">
-/* Support-specific navigation shell. Decap continues to own article editing. */
-#uo-support-nav{position:fixed;z-index:20;top:155px;left:18px;width:268px;max-height:calc(100vh - 173px);overflow:auto;background:#fff;border:1px solid #e3e8ed;border-radius:10px;box-shadow:0 2px 8px #192a3614;font:14px/1.4 system-ui,-apple-system,sans-serif;padding:15px;box-sizing:border-box}
-#uo-support-nav *{box-sizing:border-box}
-#uo-support-nav .uo-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px;border-bottom:1px solid #e9eef1;margin-bottom:12px;color:#223438;font-weight:700;font-size:15px}
-#uo-support-nav .uo-mark{background:#00a896;color:white;border-radius:8px;display:grid;place-items:center;width:34px;height:34px;font-weight:800;font-size:19px}
-#uo-support-nav .uo-sub{font-size:11px;color:#718087;font-weight:500}
-#uo-support-nav .uo-heading{font-size:10px;font-weight:750;letter-spacing:.09em;color:#829198;margin:17px 10px 7px;text-transform:uppercase}
-#uo-support-nav a,#uo-support-nav .uo-unavailable{display:flex;align-items:center;gap:11px;min-height:40px;padding:10px 11px;border-radius:7px;text-decoration:none;color:#34454b;font-weight:550}
-#uo-support-nav a:hover{background:#f1f7f6}
-#uo-support-nav a[aria-current="page"]{background:#e3f7f3;color:#007f73;font-weight:750}
-#uo-support-nav .uo-ico{font-size:17px;width:21px;text-align:center}
-#uo-support-nav .uo-unavailable{color:#9aa5a9;cursor:not-allowed}
-#uo-support-nav .uo-soon{font-size:10px;margin-left:auto;color:#9aa5a9;font-weight:500}
-body.uo-support-list #uo-support-nav{display:block!important}
-#uo-support-nav{display:none}
-body.uo-support-list #nc-root{padding-left:288px}
-@media(max-width:900px){#uo-support-nav{left:8px;width:210px}body.uo-support-list #nc-root{padding-left:218px}}
-@media(max-width:650px){#uo-support-nav{position:relative;top:auto;left:auto;width:auto;max-height:none;margin:12px 12px 0;z-index:2}body.uo-support-list #nc-root{padding-left:0}}
-</style>
 </head>
 <body>
-<nav id="uo-support-nav" aria-label="Support Manager navigation">
-  <div class="uo-brand"><span class="uo-mark">U</span><span>Support Manager<div class="uo-sub">Undiscovered One</div></span></div>
-  <div class="uo-heading">Knowledge base</div>
-  <a href="#/collections/help" data-uo-link="articles"><span class="uo-ico">▤</span>Articles</a>
-  <a href="#/collections/help/new" data-uo-link="new"><span class="uo-ico">＋</span>New article</a>
-  <a href="#/media" data-uo-link="media"><span class="uo-ico">▧</span>Media library</a>
-  <div class="uo-heading">Management</div>
-  <div class="uo-unavailable" title="Category management is planned"><span class="uo-ico">▦</span>Categories<span class="uo-soon">Soon</span></div>
-  <div class="uo-unavailable" title="Revision browser is planned"><span class="uo-ico">↶</span>Revision history<span class="uo-soon">Soon</span></div>
-  <div class="uo-unavailable" title="Support reporting is planned"><span class="uo-ico">◫</span>Insights<span class="uo-soon">Soon</span></div>
-</nav>
-<script>
-(function () {
-  function updateNavigation() {
-    var hash = window.location.hash || '';
-    var isEditor = hash.includes('/new') || hash.includes('/entries/') || hash.includes('/entry/');
-    var isLogin = hash.includes('/login');
-    document.body.classList.toggle('uo-support-list', !isEditor && !isLogin);
-    document.querySelectorAll('[data-uo-link]').forEach(function (link) {
-      var section = link.getAttribute('data-uo-link');
-      var active = section === 'media' ? hash.includes('/media') :
-        section === 'new' ? hash.includes('/new') :
-        !hash.includes('/media') && !isEditor;
-      if (active) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    });
-  }
-  function updateAfterMount() {
-    updateNavigation();
-    var nav = document.getElementById('uo-support-nav');
-    if (!nav || !document.body.classList.contains('uo-support-list')) return;
-    // Hide only the redundant generic Collections card, not the article list.
-    document.querySelectorAll('h1,h2,h3,h4').forEach(function (heading) {
-      if (heading.textContent.trim() !== 'Collections') return;
-      var panel = heading.closest('aside') || heading.parentElement.parentElement;
-      if (panel && !panel.contains(nav)) panel.style.display = 'none';
-    });
-  }
-  window.addEventListener('hashchange', updateAfterMount);
-  window.addEventListener('DOMContentLoaded', updateAfterMount);
-  window.addEventListener('load', updateAfterMount);
-  setInterval(updateAfterMount, 1500);
-})();
-</script>
 <script src="./decap-cms.js"></script>
 </body>
 </html>
