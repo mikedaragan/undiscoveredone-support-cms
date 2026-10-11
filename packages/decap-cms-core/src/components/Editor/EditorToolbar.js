@@ -36,8 +36,8 @@ const styles = {
     border: 0 solid ${colors.textFieldBorder};
   `,
   publishedButton: css`
-    background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.tealDark};
+    background-color: #E9EDF8;
+    color: #354780;
   `,
 };
 
@@ -92,6 +92,8 @@ const ToolbarContainer = styled.div`
   min-width: 0;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
+  border-bottom: 1px solid #CDD5EB;
+  font-family: 'Satoshi', system-ui, sans-serif;
   height: 66px;
   display: flex;
   justify-content: space-between;
@@ -140,7 +142,7 @@ const ToolbarDropdown = styled(Dropdown)`
   ${styles.buttonMargin};
 
   ${Icon} {
-    color: ${colorsRaw.teal};
+    color: #5265A8;
   }
 `;
 
@@ -201,12 +203,12 @@ const PublishedButton = styled(ToolbarButton)`
 `;
 
 const PublishButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.teal};
+  background-color: #5265A8;
 `;
 
 const StatusButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.tealLight};
-  color: ${colorsRaw.teal};
+  background-color: #E9EDF8;
+  color: #5265A8;
 `;
 
 const PreviewButtonContainer = styled.div`
