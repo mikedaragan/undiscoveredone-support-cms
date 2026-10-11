@@ -220,28 +220,18 @@ class Header extends Component {
     return (
       <AppHeader>
         <AppHeaderContent>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              padding: '13px 18px',
-              gap: 2,
-            }}
-          >
-            <strong style={{ fontSize: 18, color: '#25383b', fontWeight: 700 }}>Articles</strong>
-            <span style={{ fontSize: 12, color: '#74838a' }}>
-              Manage your support knowledge base
-            </span>
+          <div css={css`
+            display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:60px;box-sizing:border-box;
+            @media(min-width:800px) { padding:14px 24px; }
+          `}>
+            <button type="button" aria-label="Open navigation" title="Open navigation"
+              onClick={() => window.dispatchEvent(new Event('uo-support-toggle-navigation'))}
+              css={css`display:none;@media(max-width:799px){display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border:0;border-radius:8px;background:transparent;color:#263b3f;font-size:23px;cursor:pointer;}`}>☰</button>
+            <div css={css`min-width:0;display:flex;flex-direction:column;gap:2px;`}>
+              <strong css={css`font-size:18px;color:#25383b;font-weight:700;white-space:nowrap;`}>Articles</strong>
+              <span css={css`font-size:12px;color:#74838a;@media(max-width:500px){display:none;}`}>Manage your support knowledge base</span>
+            </div>
           </div>
-          <AppHeaderActions>
-            <SettingsDropdown
-              displayUrl={displayUrl}
-              isTestRepo={isTestRepo}
-              imageUrl={user?.avatar_url}
-              onLogoutClick={onLogoutClick}
-            />
-          </AppHeaderActions>
         </AppHeaderContent>
       </AppHeader>
     );
