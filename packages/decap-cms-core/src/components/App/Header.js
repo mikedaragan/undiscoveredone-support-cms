@@ -76,7 +76,7 @@ class Header extends Component {
           <div>
             <strong
               css={css`
-                font-family: Bricolage Grotesque, sans-serif;
+                font-family: 'Bricolage Grotesque', sans-serif;
                 font-size: 18px;
                 color: #202d58;
                 font-weight: 700;
