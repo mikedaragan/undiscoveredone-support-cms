@@ -111,7 +111,8 @@ const StyledSplitPane = styled(SplitPane)`
   }
   @media (max-width: 799px) {
     .Pane1 { width: 100% !important; }
-    .Pane2, .Resizer { display: none !important; }
+    .Pane2,
+    .Resizer { display: none !important; }
   }
 `;
 
