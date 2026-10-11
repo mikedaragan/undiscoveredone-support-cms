@@ -34,6 +34,10 @@ function AppHeader(props) {
         ${shadows.dropMain};
         width: 100%;
         background-color: ${colors.foreground};
+        @media (min-width: 800px) {
+          width: calc(100% - 252px);
+          margin-left: 252px;
+        }
         z-index: ${zIndex.zIndex300};
 
         @media (min-height: 500px) {
