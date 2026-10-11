@@ -99,19 +99,23 @@ const ToolbarContainer = styled.div`
 
 const ToolbarSectionMain = styled.div`
   ${styles.toolbarSection};
-  flex: 10;
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
+  justify-content: flex-end;
+  padding: 0 16px 0 8px;
+  @media (max-width: 700px) { padding: 0 12px 0 4px; }
 `;
 
 const ToolbarSubSectionFirst = styled.div`
   display: flex;
   align-items: center;
+  min-width: 0;
 `;
 
 const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
   justify-content: flex-end;
+  margin-left: auto;
 `;
 
 const ToolbarSectionBackLink = styled(Link)`
@@ -708,7 +712,7 @@ export class EditorToolbar extends Component {
           </div>
         </ToolbarSectionBackLink>
         {collection.get('name') === 'help' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8, flexShrink: 0 }}>
             {[
               ['＋', 'Insert content', 'uo-support-toggle-insert'],
               ['↶', 'Undo', 'uo-support-undo'],
