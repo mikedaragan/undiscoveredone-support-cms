@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
 <title>Undiscovered One · Support Manager</title>
-<style>
+<style id="uo-support-style">
 /* Support-specific navigation shell. Decap continues to own article editing. */
 #uo-support-nav{position:fixed;z-index:20;top:155px;left:18px;width:268px;max-height:calc(100vh - 173px);overflow:auto;background:#fff;border:1px solid #e3e8ed;border-radius:10px;box-shadow:0 2px 8px #192a3614;font:14px/1.4 system-ui,-apple-system,sans-serif;padding:15px;box-sizing:border-box}
 #uo-support-nav *{box-sizing:border-box}
@@ -19,7 +19,7 @@
 #uo-support-nav .uo-ico{font-size:17px;width:21px;text-align:center}
 #uo-support-nav .uo-unavailable{color:#9aa5a9;cursor:not-allowed}
 #uo-support-nav .uo-soon{font-size:10px;margin-left:auto;color:#9aa5a9;font-weight:500}
-body.uo-support-list #uo-support-nav{display:block}
+body.uo-support-list #uo-support-nav{display:block!important}
 #uo-support-nav{display:none}
 body.uo-support-list #nc-root{padding-left:288px}
 @media(max-width:900px){#uo-support-nav{left:8px;width:210px}body.uo-support-list #nc-root{padding-left:218px}}
@@ -55,6 +55,35 @@ body.uo-support-list #nc-root{padding-left:288px}
   }
   window.addEventListener('hashchange',updateNavigation);
   window.addEventListener('DOMContentLoaded',updateNavigation);
+  // Decap can replace body children while mounting. Restore our navigation
+  // after its root is created, without interrupting the React editor.
+  var navTemplate=document.getElementById('uo-support-nav')?.outerHTML;
+  var navStyle=document.querySelector('style')?.textContent||'';
+  function ensureSupportNavigation(){
+    if(!document.getElementById('uo-support-nav')&&navTemplate){
+      document.body.insertAdjacentHTML('afterbegin',navTemplate);
+    }
+    if(navStyle&&!document.getElementById('uo-support-style')){
+      var style=document.createElement('style');
+      style.id='uo-support-style';
+      style.textContent=navStyle;
+      document.head.appendChild(style);
+    }
+    updateNavigation();
+    // Hide Decap's redundant collection selector only when our nav is present.
+    if(document.body.classList.contains('uo-support-list')){
+      document.querySelectorAll('h1,h2,h3,h4').forEach(function(el){
+        if(el.textContent.trim()==='Collections'){
+          var panel=el.closest('aside')||el.parentElement?.parentElement;
+          if(panel&&panel.id!=='uo-support-nav'&&!panel.contains(document.getElementById('uo-support-nav'))){
+            panel.style.display='none';
+          }
+        }
+      });
+    }
+  }
+  window.addEventListener('load',ensureSupportNavigation);
+  setInterval(ensureSupportNavigation,1200);
 })();
 </script>
 <script src="./decap-cms.js"></script>
