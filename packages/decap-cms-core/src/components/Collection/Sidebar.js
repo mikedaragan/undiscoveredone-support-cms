@@ -13,8 +13,8 @@ const Container = styled.aside`
   height: 100vh;
   max-height: 100vh;
   overflow-y: auto;
-  background: #202D58;
-  color: #F5F7FC;
+  background: #202d58;
+  color: #f5f7fc;
   border: 0;
   border-right: 1px solid #354780;
   border-radius: 0;
@@ -28,7 +28,7 @@ const Container = styled.aside`
     z-index: 1302;
     transform: translateX(-105%);
     transition: transform 180ms ease;
-    box-shadow: 0 8px 35px rgba(0,0,0,.13);
+    box-shadow: 0 8px 35px rgba(0, 0, 0, 0.13);
     &.mobile-open { transform: translateX(0); }
   }
 `;
@@ -41,10 +41,10 @@ const Brand = styled.div`
   margin-bottom: 12px;
   font-weight: 700;
   font-size: 15px;
-  color: #F5F7FC;
+  color: #f5f7fc;
 `;
 const Mark = styled.span`
-  background: #5265A8;
+  background: #5265a8;
   color: #fff;
   border-radius: 8px;
   display: grid;
@@ -57,7 +57,7 @@ const Mark = styled.span`
 `;
 const Section = styled.div`
   margin: 17px 10px 7px;
-  color: #CDD5EB;
+  color: #cdd5eb;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: .09em;
@@ -71,11 +71,13 @@ const Item = styled(NavLink)`
   padding: 10px 11px;
   border-radius: 7px;
   text-decoration: none;
-  color: #F5F7FC;
+  color: #f5f7fc;
   font-weight: 550;
   box-sizing: border-box;
   &:hover { background: #354780; }
-  &.support-active { background: #5265A8; color: #fff; font-weight: 750; }
+  &.support-active { background: #5265a8;
+    color: #fff;
+    font-weight: 750; }
 `;
 const Soon = styled.div`
   display: flex;
@@ -83,7 +85,7 @@ const Soon = styled.div`
   gap: 11px;
   min-height: 40px;
   padding: 10px 11px;
-  color: #CDD5EB;
+  color: #cdd5eb;
   font-weight: 550;
 `;
 const Glyph = styled.span`width: 21px; text-align: center; font-size: 17px;`;
@@ -111,7 +113,7 @@ export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
         css={`display:none; @media(max-width:799px) { display:block; position:absolute; right:12px; top:12px; border:0; background:#f1f5f5; border-radius:7px; padding:6px 11px; font-size:21px; cursor:pointer; }`}>×</button>
       <Brand>
         <Mark>U</Mark>
-        <span>Support Manager<div style={{ fontSize: 11, color: '#CDD5EB', fontWeight: 500 }}>Undiscovered One</div></span>
+        <span>Support Manager<div style={{ fontSize: 11, color: '#cdd5eb', fontWeight: 500 }}>Undiscovered One</div></span>
       </Brand>
       <Section>Knowledge base</Section>
       <Item onClick={() => setOpen(false)} to="/collections/help" exact activeClassName="support-active"><Glyph>▤</Glyph>Articles</Item>
@@ -128,7 +130,7 @@ export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
           imageUrl={user?.avatar_url}
           onLogoutClick={onLogoutClick}
         />
-        <span css={`font-size:12px;font-weight:650;color:#F5F7FC;overflow:hidden;text-overflow:ellipsis;`}>{user?.name || user?.email || 'My account'}</span>
+        <span css={`font-size:12px;font-weight:650;color:#f5f7fc;overflow:hidden;text-overflow:ellipsis;`}>{user?.name || user?.email || 'My account'}</span>
       </div>
     </Container>
     </>
