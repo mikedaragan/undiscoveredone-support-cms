@@ -2,7 +2,9 @@ name: Refresh Support UI Snapshots
 on:
   push:
     branches: [feature/support-tiptap-editor]
-    paths: [.github/workflows/support-snapshots-once.yml]
+    paths:
+      - .github/workflows/support-snapshots-once.yml
+      - packages/decap-cms-core/src/components/Collection/__tests__/Sidebar.spec.js
 permissions:
   contents: write
 jobs:
