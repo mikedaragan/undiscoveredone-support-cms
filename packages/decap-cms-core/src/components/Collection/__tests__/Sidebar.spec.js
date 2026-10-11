@@ -8,12 +8,13 @@ jest.mock('../../UI', () => ({
 }));
 
 describe('Support Manager Sidebar', () => {
-  const renderSidebar = props =>
-    render(
+  function renderSidebar(props) {
+    return render(
       <MemoryRouter>
         <Sidebar {...props} />
       </MemoryRouter>,
     );
+  }
 
   it('renders the Support Manager navigation and account settings', () => {
     const { getByText, getByTestId, getByRole } = renderSidebar({
@@ -21,18 +22,9 @@ describe('Support Manager Sidebar', () => {
     });
 
     expect(getByText('Support Manager')).toBeInTheDocument();
-    expect(getByRole('link', { name: /Articles/ })).toHaveAttribute(
-      'href',
-      '/collections/help',
-    );
-    expect(getByRole('link', { name: /New article/ })).toHaveAttribute(
-      'href',
-      '/collections/help/new',
-    );
-    expect(getByRole('link', { name: /Media library/ })).toHaveAttribute(
-      'href',
-      '/media',
-    );
+    expect(getByRole('link', { name: /Articles/ })).toHaveAttribute('href', '/collections/help');
+    expect(getByRole('link', { name: /New article/ })).toHaveAttribute('href', '/collections/help/new');
+    expect(getByRole('link', { name: /Media library/ })).toHaveAttribute('href', '/media');
     expect(getByText('Editor')).toBeInTheDocument();
     expect(getByTestId('account-settings')).toBeInTheDocument();
   });
