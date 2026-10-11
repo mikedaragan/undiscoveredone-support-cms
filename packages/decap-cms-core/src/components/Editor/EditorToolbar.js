@@ -19,7 +19,6 @@ import {
 } from 'decap-cms-ui-default';
 
 import { status } from '../../constants/publishModes';
-import { SettingsDropdown } from '../UI';
 
 const styles = {
   noOverflow: css`
@@ -131,12 +130,6 @@ const ToolbarSectionBackLink = styled(Link)`
   &:focus {
     background-color: #f1f2f4;
   }
-`;
-
-const ToolbarSectionMeta = styled.div`
-  ${styles.toolbarSection};
-  border-left-width: 1px;
-  padding: 0 7px;
 `;
 
 const ToolbarDropdown = styled(Dropdown)`
@@ -740,13 +733,6 @@ export class EditorToolbar extends Component {
               : this.renderSimpleDeployPreviewControls()}
           </ToolbarSubSectionLast>
         </ToolbarSectionMain>
-        <ToolbarSectionMeta>
-          <SettingsDropdown
-            displayUrl={displayUrl}
-            imageUrl={user?.avatar_url}
-            onLogoutClick={onLogoutClick}
-          />
-        </ToolbarSectionMeta>
       </ToolbarContainer>
     );
   }
