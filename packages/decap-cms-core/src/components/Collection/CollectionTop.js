@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
@@ -7,12 +8,15 @@ import { components, buttons, shadows } from 'decap-cms-ui-default';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
   justify-content: space-between;
 `;
@@ -47,7 +51,7 @@ function getCollectionProps(collection) {
   };
 }
 
-function CollectionTop({ collection, newEntryUrl, t }) {
+function CollectionTop({ collection, newEntryUrl, t, children }) {
   const { collectionLabel, collectionLabelSingular, collectionDescription } = getCollectionProps(
     collection,
     t,
@@ -57,6 +61,8 @@ function CollectionTop({ collection, newEntryUrl, t }) {
     <CollectionTopContainer>
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
+        <div css={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginLeft: 'auto' }}>
+        {children}
         {newEntryUrl ? (
           <CollectionTopNewButton
             to={newEntryUrl}
@@ -70,6 +76,7 @@ function CollectionTop({ collection, newEntryUrl, t }) {
             })}
           </CollectionTopNewButton>
         ) : null}
+        </div>
       </CollectionTopRow>
       {collectionDescription ? (
         <CollectionTopDescription>{collectionDescription}</CollectionTopDescription>
@@ -82,6 +89,7 @@ CollectionTop.propTypes = {
   collection: ImmutablePropTypes.map.isRequired,
   newEntryUrl: PropTypes.string,
   t: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
 
 export default translate()(CollectionTop);
