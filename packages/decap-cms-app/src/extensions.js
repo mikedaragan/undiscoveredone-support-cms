@@ -24,6 +24,7 @@ import image from '../../decap-cms-editor-component-image/src/index.js';
 import * as locales from '../../decap-cms-locales/src/index.js';
 
 import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
+import SupportTiptapControl from './SupportTiptapControl';
 
 // Register only the Supabase backend used by the Support Editor.
 CMS.registerBackend('supabase', SupabaseBackend);
@@ -46,6 +47,7 @@ CMS.registerWidget([
   DecapCmsWidgetColorString.Widget(),
   DecapCmsWidgetUuid.Widget(),
 ]);
+CMS.registerWidget('support-tiptap', SupportTiptapControl);
 CMS.registerEditorComponent(image);
 CMS.registerEditorComponent({
   id: 'code-block',
