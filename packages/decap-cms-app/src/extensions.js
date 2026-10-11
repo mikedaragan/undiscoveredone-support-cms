@@ -24,7 +24,7 @@ import image from '../../decap-cms-editor-component-image/src/index.js';
 import * as locales from '../../decap-cms-locales/src/index.js';
 
 import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
-import SupportTiptapControl from './SupportTiptapControl';
+import SupportTiptapControl from './SupportTiptapControl.jsx';
 
 // Register only the Supabase backend used by the Support Editor.
 CMS.registerBackend('supabase', SupabaseBackend);
