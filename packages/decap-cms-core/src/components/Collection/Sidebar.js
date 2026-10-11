@@ -21,16 +21,12 @@ const Container = styled.aside`
   font: 14px/1.4 system-ui, -apple-system, sans-serif;
   z-index: 1000;
   @media (max-width: 799px) {
-    position: relative;
-    top: auto;
-    left: auto;
-    bottom: auto;
-    width: 100%;
-    height: auto;
-    max-height: none;
-    border-right: 0;
-    border-bottom: 1px solid #e3e8ed;
-    padding: 12px;
+    width: min(310px, 86vw);
+    z-index: 1302;
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+    box-shadow: 0 8px 35px rgba(0,0,0,.13);
+    &.mobile-open { transform: translateX(0); }
   }
 `;
 const Brand = styled.div`
@@ -91,21 +87,39 @@ const Glyph = styled.span`width: 21px; text-align: center; font-size: 17px;`;
 const SoonLabel = styled.span`margin-left: auto; font-size: 10px; font-weight: 500;`;
 
 export function Sidebar() {
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = event => { if (event.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open]);
   return (
-    <Container aria-label="Support Manager navigation">
+    <>
+      <button type="button" aria-label="Open navigation" aria-expanded={open} aria-controls="support-mobile-navigation" onClick={() => setOpen(true)}
+        css={`
+          display:none;
+          @media(max-width:799px) { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:1px solid #e0e7e9; border-radius:9px; background:white; color:#283d40; font-size:25px; cursor:pointer; }
+        `}>☰</button>
+      {open && <button type="button" aria-label="Close navigation" onClick={() => setOpen(false)}
+        css={`display:none; @media(max-width:799px) { display:block; position:fixed; inset:0; width:100vw; height:100dvh; background:rgba(13,26,30,.42); border:0; padding:0; z-index:1301; cursor:pointer; }`} />}
+      <Container id="support-mobile-navigation" className={open ? 'mobile-open' : ''} aria-label="Support Manager navigation">
+      <button type="button" aria-label="Close navigation" onClick={() => setOpen(false)}
+        css={`display:none; @media(max-width:799px) { display:block; position:absolute; right:12px; top:12px; border:0; background:#f1f5f5; border-radius:7px; padding:6px 11px; font-size:21px; cursor:pointer; }`}>×</button>
       <Brand>
         <Mark>U</Mark>
         <span>Support Manager<div style={{ fontSize: 11, color: '#718087', fontWeight: 500 }}>Undiscovered One</div></span>
       </Brand>
       <Section>Knowledge base</Section>
-      <Item to="/collections/help" exact activeClassName="support-active"><Glyph>▤</Glyph>Articles</Item>
-      <Item to="/collections/help/new" activeClassName="support-active"><Glyph>＋</Glyph>New article</Item>
-      <Item to="/media" activeClassName="support-active"><Glyph>▧</Glyph>Media library</Item>
+      <Item onClick={() => setOpen(false)} to="/collections/help" exact activeClassName="support-active"><Glyph>▤</Glyph>Articles</Item>
+      <Item onClick={() => setOpen(false)} to="/collections/help/new" activeClassName="support-active"><Glyph>＋</Glyph>New article</Item>
+      <Item onClick={() => setOpen(false)} to="/media" activeClassName="support-active"><Glyph>▧</Glyph>Media library</Item>
       <Section>Management</Section>
       <Soon title="Category management is planned"><Glyph>▦</Glyph>Categories<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Revision history is planned"><Glyph>↶</Glyph>Revision history<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Support analytics is planned"><Glyph>◫</Glyph>Insights<SoonLabel>Soon</SoonLabel></Soon>
     </Container>
+    </>
   );
 }
 
