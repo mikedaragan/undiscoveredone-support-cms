@@ -39,7 +39,7 @@ const CollectionContainer = styled.div`
 
 const CollectionMain = styled.main`
   @media (min-width: 800px) {
-    padding-left: 280px;
+    padding-left: 252px;
   }
 `;
 
