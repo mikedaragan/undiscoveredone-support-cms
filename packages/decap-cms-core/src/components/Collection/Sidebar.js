@@ -21,7 +21,7 @@ const Container = styled.aside`
   box-shadow: none;
   padding: 20px 12px;
   box-sizing: border-box;
-  font: 14px/1.4 'Satoshi', system-ui, sans-serif;
+  font: 14px/1.4 Satoshi, system-ui, sans-serif;
   z-index: 1000;
   @media (max-width: 799px) {
     width: min(310px, 86vw);
@@ -60,7 +60,7 @@ const Section = styled.div`
   color: #cdd5eb;
   font-size: 10px;
   font-weight: 750;
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
 `;
 const Item = styled(NavLink)`
@@ -75,9 +75,11 @@ const Item = styled(NavLink)`
   font-weight: 550;
   box-sizing: border-box;
   &:hover { background: #354780; }
-  &.support-active { background: #5265a8;
+  &.support-active {
+    background: #5265a8;
     color: #fff;
-    font-weight: 750; }
+    font-weight: 750;
+  }
 `;
 const Soon = styled.div`
   display: flex;
