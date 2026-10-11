@@ -98,7 +98,7 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
 export default class ControlPane extends Component {
   state = {
     selectedLocale: this.props.locale,
-    supportSettingsOpen: false,
+    supportSettingsOpen: true,
   };
 
   childRefs = {};
@@ -256,38 +256,53 @@ export default class ControlPane extends Component {
     };
     const visibleFields = fields.filter(f => f.get('widget') !== 'hidden');
     if (supportArticle) {
-      const primary = visibleFields.filter(f => ['title', 'body'].includes(f.get('name')));
+      const titleField = visibleFields.find(f => f.get('name') === 'title');
+      const bodyField = visibleFields.find(f => f.get('name') === 'body');
       const settings = visibleFields.filter(f => !['title', 'body'].includes(f.get('name')));
+      const titleValue = titleField ? getFieldValue({ field: titleField, entry, locale, isTranslatable: isFieldTranslatable(titleField, locale, defaultLocale) }) : '';
+      const titleText = typeof titleValue === 'string' ? titleValue : '';
       return (
         <div className="uo-support-workspace" css={css`
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 24px clamp(16px, 4vw, 48px) 80px;
-          .uo-support-workspace-header { display:flex; align-items:center; justify-content:flex-end; margin-bottom:24px; }
-          .uo-support-settings-toggle { border:1px solid #d7e2e4; border-radius:9px; padding:10px 15px; background:white; color:#254044; cursor:pointer; font-weight:600; }
-          .uo-support-workspace-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:32px; align-items:start; }
-          .uo-support-workspace-grid.settings-open { grid-template-columns:minmax(0,1fr) 290px; }
-          .uo-support-document { min-width:0; max-width:820px; margin:0 auto; width:100%; }
-          .uo-support-title input { font-size:clamp(28px,3.5vw,44px)!important; font-weight:700; line-height:1.25; border:0!important; box-shadow:none!important; padding:12px 0!important; height:auto!important; }
-          .uo-support-title label { font-size:12px; }
-          .uo-support-settings { background:#fff; border:1px solid #e1e7e9; border-radius:12px; padding:18px; position:sticky; top:85px; min-width:0; }
-          .uo-support-settings h2 { font-size:16px; margin:0 0 18px; color:#24383c; }
+          min-height: calc(100vh - 165px);
+          background: #fff;
+          padding: 22px clamp(16px, 3vw, 40px) 64px;
+          .uo-support-workspace-header { display:flex; justify-content:flex-end; align-items:center; margin-bottom:16px; }
+          .uo-support-settings-toggle { border:1px solid #d7e2e4; border-radius:8px; padding:9px 14px; background:white; color:#254044; cursor:pointer; font-weight:600; }
+          .uo-support-workspace-grid { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:32px; align-items:start; max-width:1450px; margin:auto; }
+          .uo-support-workspace-grid.settings-closed { grid-template-columns:minmax(0,1fr); }
+          .uo-support-document { min-width:0; max-width:850px; width:100%; margin:0 auto; padding-top:8px; }
+          .uo-support-title { position:relative; margin-bottom:18px; }
+          .uo-support-title > .uo-title-floating-label { position:absolute; top:23px; left:20px; z-index:1; pointer-events:none; color:#849195; font-size:23px; line-height:1; transition:all .15s ease; }
+          .uo-support-title:focus-within > .uo-title-floating-label, .uo-support-title.has-value > .uo-title-floating-label { top:9px; left:16px; font-size:11px; letter-spacing:.04em; font-weight:700; color:#52676b; }
+          .uo-support-title label { display:none!important; }
+          .uo-support-title input { box-sizing:border-box!important; display:block!important; width:100%!important; min-height:76px!important; font-size:clamp(25px,3vw,38px)!important; font-weight:650!important; line-height:1.3!important; background:#fff!important; border:1px solid #d7e2e4!important; border-radius:10px!important; box-shadow:none!important; padding:27px 18px 10px!important; height:auto!important; color:#20383c!important; }
+          .uo-support-title input:focus { border-color:#00a896!important; box-shadow:0 0 0 2px rgba(0,168,150,.12)!important; }
+          .uo-support-title input::placeholder { color:transparent!important; }
+          .uo-support-body { border:1px solid #d7e2e4; border-radius:10px; padding:8px 18px 18px; min-height:450px; }
+          .uo-support-body label { font-size:11px; }
+          .uo-support-body .uo-tiptap-document { min-height:360px!important; }
+          .uo-support-settings { background:#fff; border:1px solid #e0e6e8; border-radius:10px; padding:20px; position:sticky; top:18px; min-width:0; }
+          .uo-support-settings h2 { font-size:16px; margin:0 0 20px; color:#24383c; }
           .uo-support-settings textarea { max-width:100%; }
-          @media(max-width:850px) { .uo-support-workspace-grid.settings-open { grid-template-columns:minmax(0,1fr); } .uo-support-settings { position:static; grid-row:1; } }
-        ` }>
+          @media(max-width:900px) { .uo-support-workspace-grid { grid-template-columns:minmax(0,1fr); } .uo-support-settings { position:static; grid-row:1; } .uo-support-workspace-header { margin-bottom:8px; } }
+        `}>
           <div className="uo-support-workspace-header">
             <button type="button" className="uo-support-settings-toggle" aria-expanded={this.state.supportSettingsOpen} onClick={() => this.setState(({ supportSettingsOpen }) => ({ supportSettingsOpen: !supportSettingsOpen }))}>
-              {this.state.supportSettingsOpen ? 'Close article settings' : 'Article settings'}
+              {this.state.supportSettingsOpen ? 'Hide settings' : 'Show settings'}
             </button>
           </div>
-          <div className={`uo-support-workspace-grid ${this.state.supportSettingsOpen ? 'settings-open' : ''}`}>
+          <div className={`uo-support-workspace-grid ${this.state.supportSettingsOpen ? '' : 'settings-closed'}`}>
             <main className="uo-support-document" aria-label="Article editor">
-              {primary.map(field => <div key={field.get('name')} className={field.get('name') === 'title' ? 'uo-support-title' : 'uo-support-body'}>{renderField(field, fields.indexOf(field))}</div>)}
+              {titleField && <div className={`uo-support-title ${titleText ? 'has-value' : ''}`}>
+                <span className="uo-title-floating-label" aria-hidden="true">Title</span>
+                {renderField(titleField, fields.indexOf(titleField))}
+              </div>}
+              {bodyField && <div className="uo-support-body">{renderField(bodyField, fields.indexOf(bodyField))}</div>}
             </main>
-            {this.state.supportSettingsOpen && <aside className="uo-support-settings" aria-label="Article settings">
+            <aside className="uo-support-settings" aria-label="Article settings" style={{ display: this.state.supportSettingsOpen ? undefined : 'none' }}>
               <h2>Article settings</h2>
               {settings.map(field => <div key={field.get('name')}>{renderField(field, fields.indexOf(field))}</div>)}
-            </aside>}
+            </aside>
           </div>
         </div>
       );
