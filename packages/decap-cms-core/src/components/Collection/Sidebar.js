@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
+import { SettingsDropdown } from '../UI';
 
 const Container = styled.aside`
   position: fixed;
@@ -86,8 +87,13 @@ const Soon = styled.div`
 const Glyph = styled.span`width: 21px; text-align: center; font-size: 17px;`;
 const SoonLabel = styled.span`margin-left: auto; font-size: 10px; font-weight: 500;`;
 
-export function Sidebar() {
+export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
   const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    const toggle = () => setOpen(current => !current);
+    window.addEventListener('uo-support-toggle-navigation', toggle);
+    return () => window.removeEventListener('uo-support-toggle-navigation', toggle);
+  }, []);
   React.useEffect(() => {
     if (!open) return undefined;
     const onKeyDown = event => { if (event.key === 'Escape') setOpen(false); };
@@ -96,11 +102,6 @@ export function Sidebar() {
   }, [open]);
   return (
     <>
-      <button type="button" aria-label="Open navigation" aria-expanded={open} aria-controls="support-mobile-navigation" onClick={() => setOpen(true)}
-        css={`
-          display:none;
-          @media(max-width:799px) { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:1px solid #e0e7e9; border-radius:9px; background:white; color:#283d40; font-size:25px; cursor:pointer; }
-        `}>☰</button>
       {open && <button type="button" aria-label="Close navigation" onClick={() => setOpen(false)}
         css={`display:none; @media(max-width:799px) { display:block; position:fixed; inset:0; width:100vw; height:100dvh; background:rgba(13,26,30,.42); border:0; padding:0; z-index:1301; cursor:pointer; }`} />}
       <Container id="support-mobile-navigation" className={open ? 'mobile-open' : ''} aria-label="Support Manager navigation">
@@ -118,6 +119,15 @@ export function Sidebar() {
       <Soon title="Category management is planned"><Glyph>▦</Glyph>Categories<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Revision history is planned"><Glyph>↶</Glyph>Revision history<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Support analytics is planned"><Glyph>◫</Glyph>Insights<SoonLabel>Soon</SoonLabel></Soon>
+      <div css={`margin-top:32px;padding:16px 8px 8px;border-top:1px solid #e7ecee;display:flex;align-items:center;gap:10px;min-width:0;`}>
+        <SettingsDropdown
+          displayUrl={displayUrl}
+          isTestRepo={isTestRepo}
+          imageUrl={user?.avatar_url}
+          onLogoutClick={onLogoutClick}
+        />
+        <span css={`font-size:12px;font-weight:650;color:#35494c;overflow:hidden;text-overflow:ellipsis;`}>{user?.name || user?.email || 'My account'}</span>
+      </div>
     </Container>
     </>
   );
