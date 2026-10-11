@@ -223,7 +223,7 @@ class App extends Component {
               exact
               collections={collections}
               path="/collections/:name"
-              render={props => <Collection {...props} />}
+              render={props => <Collection {...props} user={user} onLogoutClick={logoutUser} displayUrl={config.display_url} isTestRepo={config.backend.name === "test-repo"} />}
             />
             <RouteInCollection
               path="/collections/:name/new"
@@ -238,7 +238,7 @@ class App extends Component {
             <RouteInCollection
               path="/collections/:name/search/:searchTerm"
               collections={collections}
-              render={props => <Collection {...props} isSearchResults isSingleSearchResult />}
+              render={props => <Collection {...props} user={user} onLogoutClick={logoutUser} displayUrl={config.display_url} isTestRepo={config.backend.name === "test-repo"} isSearchResults isSingleSearchResult />}
             />
             <RouteInCollection
               collections={collections}
@@ -247,7 +247,7 @@ class App extends Component {
             />
             <Route
               path="/search/:searchTerm"
-              render={props => <Collection {...props} isSearchResults />}
+              render={props => <Collection {...props} user={user} onLogoutClick={logoutUser} displayUrl={config.display_url} isTestRepo={config.backend.name === "test-repo"} isSearchResults />}
             />
             <RouteInCollection
               path="/edit/:name/:entryName"
