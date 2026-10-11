@@ -90,7 +90,7 @@ const ToolbarContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  min-width: 800px;
+  min-width: 0;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
   height: 66px;
@@ -707,6 +707,22 @@ export class EditorToolbar extends Component {
             )}
           </div>
         </ToolbarSectionBackLink>
+        {collection.get('name') === 'help' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8 }}>
+            {[
+              ['＋', 'Insert content', 'uo-support-toggle-insert'],
+              ['↶', 'Undo', 'uo-support-undo'],
+              ['↷', 'Redo', 'uo-support-redo'],
+              ['☷', 'Article settings', 'uo-support-toggle-settings'],
+            ].map(([symbol, label, eventName]) => (
+              <button key={eventName} type="button" aria-label={label} title={label}
+                onClick={() => window.dispatchEvent(new Event(eventName))}
+                style={{ width: 32, height: 34, border: '1px solid #e2e8e9', borderRadius: 6, background: '#fff', color: '#254044', fontSize: 19, cursor: 'pointer' }}>
+                {symbol}
+              </button>
+            ))}
+          </div>
+        )}
         <ToolbarSectionMain>
           <ToolbarSubSectionFirst>
             {hasWorkflow ? this.renderWorkflowControls() : this.renderSimpleControls()}
