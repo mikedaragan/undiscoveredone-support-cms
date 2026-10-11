@@ -12,9 +12,10 @@ const Container = styled.aside`
   height: 100vh;
   max-height: 100vh;
   overflow-y: auto;
-  background: #fff;
+  background: #192b34;
+  color: #f3f7f7;
   border: 0;
-  border-right: 1px solid #e3e8ed;
+  border-right: 1px solid #324650;
   border-radius: 0;
   box-shadow: none;
   padding: 20px 12px;
@@ -35,11 +36,11 @@ const Brand = styled.div`
   align-items: center;
   gap: 10px;
   padding: 4px 8px 16px;
-  border-bottom: 1px solid #e9eef1;
+  border-bottom: 1px solid #38505a;
   margin-bottom: 12px;
   font-weight: 700;
   font-size: 15px;
-  color: #223438;
+  color: #f3f7f7;
 `;
 const Mark = styled.span`
   background: #00a896;
@@ -55,7 +56,7 @@ const Mark = styled.span`
 `;
 const Section = styled.div`
   margin: 17px 10px 7px;
-  color: #829198;
+  color: #a4b6bc;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: .09em;
@@ -69,11 +70,11 @@ const Item = styled(NavLink)`
   padding: 10px 11px;
   border-radius: 7px;
   text-decoration: none;
-  color: #34454b;
+  color: #e4eff0;
   font-weight: 550;
   box-sizing: border-box;
-  &:hover { background: #f1f7f6; }
-  &.support-active { background: #e3f7f3; color: #007f73; font-weight: 750; }
+  &:hover { background: #29444b; }
+  &.support-active { background: #096f70; color: #fff; font-weight: 750; }
 `;
 const Soon = styled.div`
   display: flex;
@@ -81,7 +82,7 @@ const Soon = styled.div`
   gap: 11px;
   min-height: 40px;
   padding: 10px 11px;
-  color: #9aa5a9;
+  color: #a2b0b6;
   font-weight: 550;
 `;
 const Glyph = styled.span`width: 21px; text-align: center; font-size: 17px;`;
@@ -109,7 +110,7 @@ export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
         css={`display:none; @media(max-width:799px) { display:block; position:absolute; right:12px; top:12px; border:0; background:#f1f5f5; border-radius:7px; padding:6px 11px; font-size:21px; cursor:pointer; }`}>×</button>
       <Brand>
         <Mark>U</Mark>
-        <span>Support Manager<div style={{ fontSize: 11, color: '#718087', fontWeight: 500 }}>Undiscovered One</div></span>
+        <span>Support Manager<div style={{ fontSize: 11, color: '#b4c1c5', fontWeight: 500 }}>Undiscovered One</div></span>
       </Brand>
       <Section>Knowledge base</Section>
       <Item onClick={() => setOpen(false)} to="/collections/help" exact activeClassName="support-active"><Glyph>▤</Glyph>Articles</Item>
@@ -119,14 +120,14 @@ export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
       <Soon title="Category management is planned"><Glyph>▦</Glyph>Categories<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Revision history is planned"><Glyph>↶</Glyph>Revision history<SoonLabel>Soon</SoonLabel></Soon>
       <Soon title="Support analytics is planned"><Glyph>◫</Glyph>Insights<SoonLabel>Soon</SoonLabel></Soon>
-      <div css={`margin-top:32px;padding:16px 8px 8px;border-top:1px solid #e7ecee;display:flex;align-items:center;gap:10px;min-width:0;`}>
+      <div css={`margin-top:32px;padding:16px 8px 8px;border-top:1px solid #38505a;display:flex;align-items:center;gap:10px;min-width:0;`}>
         <SettingsDropdown
           displayUrl={displayUrl}
           isTestRepo={isTestRepo}
           imageUrl={user?.avatar_url}
           onLogoutClick={onLogoutClick}
         />
-        <span css={`font-size:12px;font-weight:650;color:#35494c;overflow:hidden;text-overflow:ellipsis;`}>{user?.name || user?.email || 'My account'}</span>
+        <span css={`font-size:12px;font-weight:650;color:#e6eff0;overflow:hidden;text-overflow:ellipsis;`}>{user?.name || user?.email || 'My account'}</span>
       </div>
     </Container>
     </>
