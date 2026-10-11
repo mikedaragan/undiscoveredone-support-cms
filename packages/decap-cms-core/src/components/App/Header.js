@@ -215,60 +215,21 @@ class Header extends Component {
     return (
       <AppHeader>
         <AppHeaderContent>
-          <nav>
-            <AppHeaderNavList>
-              {shouldShowLogo && (
-                <AppHeaderLogo>
-                  <img src={logo?.src || logoUrl} alt="Logo" />
-                </AppHeaderLogo>
-              )}
-              <li>
-                <AppHeaderNavLink
-                  to="/"
-                  activeClassName="header-link-active"
-                  isActive={(match, location) => location.pathname.startsWith('/collections/')}
-                >
-                  <Icon type="page" />
-                  {t('app.header.content')}
-                </AppHeaderNavLink>
-              </li>
-              {hasWorkflow && (
-                <li>
-                  <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
-                    <Icon type="workflow" />
-                    {t('app.header.workflow')}
-                  </AppHeaderNavLink>
-                </li>
-              )}
-              {showMediaButton && (
-                <li>
-                  <AppHeaderButton onClick={openMediaLibrary}>
-                    <Icon type="media-alt" />
-                    {t('app.header.media')}
-                  </AppHeaderButton>
-                </li>
-              )}
-            </AppHeaderNavList>
-          </nav>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: '13px 18px',
+              gap: 2,
+            }}
+          >
+            <strong style={{ fontSize: 18, color: '#25383b', fontWeight: 700 }}>Articles</strong>
+            <span style={{ fontSize: 12, color: '#74838a' }}>
+              Manage your support knowledge base
+            </span>
+          </div>
           <AppHeaderActions>
-            {creatableCollections.size > 0 && (
-              <Dropdown
-                renderButton={() => (
-                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
-                )}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
-              >
-                {creatableCollections.map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label_singular') || collection.get('label')}
-                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                  />
-                ))}
-              </Dropdown>
-            )}
             <SettingsDropdown
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
