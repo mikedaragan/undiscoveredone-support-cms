@@ -33,6 +33,7 @@ function Command({ editor, label, action, active }) {
 }
 
 export default function SupportTiptapControl({ value, onChange, forID, className }) {
+  const [showTools, setShowTools] = React.useState(false);
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
@@ -41,6 +42,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
       attributes: {
         id: forID,
         class: 'uo-tiptap-document',
+        'data-placeholder': 'Type / to choose a block',
         'aria-label': 'Article body',
         style: 'outline:none;min-height:420px;line-height:1.75;font-size:17px;color:#26383c;',
       },
@@ -51,7 +53,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   React.useEffect(() => {
     if (!editor) return;
     const next = value || '';
-    if (editor.getMarkdown() !== next) {
+    if (!editor.isFocused && editor.getMarkdown() !== next) {
       editor.commands.setContent(next, { contentType: 'markdown', emitUpdate: false });
     }
   }, [editor, value]);
@@ -69,8 +71,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   };
 
   return (
-    <div className={className} style={{ border: '1px solid #e1e7ea', borderRadius: 12, overflow: 'hidden', background: '#fff' }}>
-      <div role="toolbar" aria-label="Article formatting" style={{ display: 'flex', gap: 3, flexWrap: 'wrap', padding: 9, borderBottom: '1px solid #e8edef' }}>
+    <div className={className} style={{ background: '#fff', minWidth: 0 }}>
+      <button type="button" onClick={() => setShowTools(open => !open)} aria-expanded={showTools} style={{ background: "white", border: "1px solid #dfe7e8", borderRadius: 7, padding: "7px 12px", marginBottom: 12, cursor: "pointer", color: "#34484b" }}>{showTools ? "Hide formatting" : "+ Format / insert"}</button>
+      {showTools && <div role="toolbar" aria-label="Article formatting" style={{ display: 'flex', gap: 3, flexWrap: 'wrap', padding: 9, border: '1px solid #e8edef', borderRadius: 8, marginBottom: 12 }}>
         <Command editor={editor} label="Paragraph" action={e => e.chain().focus().setParagraph().run()} />
         <Command editor={editor} label="H2" action={e => e.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive('heading', { level: 2 })} />
         <Command editor={editor} label="H3" action={e => e.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive('heading', { level: 3 })} />
@@ -83,7 +86,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         <Command editor={editor} label="Undo" action={e => e.chain().focus().undo().run()} />
         <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
       </div>
-      <div style={{ maxWidth: 780, margin: '0 auto', padding: '26px clamp(16px,4vw,42px)' }}>
+      </div>}
+      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: attr(data-placeholder); float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
+      <div style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
         <EditorContent editor={editor} />
       </div>
     </div>
