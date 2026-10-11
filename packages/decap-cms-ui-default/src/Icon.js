@@ -58,14 +58,21 @@ function Icon({ type, direction, size = 'medium', className }) {
   const isMarkup = typeof IconSvg === 'string';
   const iconProps = !isMarkup ? IconSvg.defaultProps || {} : {};
 
+  const wrapperProps = {
+    className,
+    size: sizes[size] || size,
+    rotation: getRotation(icon.direction, direction),
+  };
+
+  // React 19 rejects elements with both children and dangerouslySetInnerHTML,
+  // even when the children expression evaluates to false.
+  if (isMarkup) {
+    return <IconWrapper {...wrapperProps} dangerouslySetInnerHTML={{ __html: IconSvg }} />;
+  }
+
   return (
-    <IconWrapper
-      className={className}
-      size={sizes[size] || size}
-      rotation={getRotation(icon.direction, direction)}
-      {...(isMarkup ? { dangerouslySetInnerHTML: { __html: IconSvg } } : {})}
-    >
-      {!isMarkup && <IconSvg {...iconProps} />}
+    <IconWrapper {...wrapperProps}>
+      <IconSvg {...iconProps} />
     </IconWrapper>
   );
 }
