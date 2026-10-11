@@ -54,6 +54,6 @@ CMS.registerEditorComponent({
   widget: 'code',
   type: 'code-block',
 });
-Object.keys(locales).forEach(locale => {
-  CMS.registerLocale(locale, locales[locale]);
+Object.entries(locales).forEach(([locale, translation]) => {
+  CMS.registerLocale(locale, translation);
 });
