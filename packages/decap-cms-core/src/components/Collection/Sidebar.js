@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
+
 import { SettingsDropdown } from '../UI';
 
 const Container = styled.aside`
@@ -91,13 +92,13 @@ const SoonLabel = styled.span`margin-left: auto; font-size: 10px; font-weight: 5
 export function Sidebar({ user, onLogoutClick, displayUrl, isTestRepo }) {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
-    const toggle = () => setOpen(current => !current);
+    function toggle() { setOpen(current => !current); }
     window.addEventListener('uo-support-toggle-navigation', toggle);
     return () => window.removeEventListener('uo-support-toggle-navigation', toggle);
   }, []);
   React.useEffect(() => {
     if (!open) return undefined;
-    const onKeyDown = event => { if (event.key === 'Escape') setOpen(false); };
+    function onKeyDown(event) { if (event.key === 'Escape') setOpen(false); }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open]);
