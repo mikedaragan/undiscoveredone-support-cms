@@ -85,10 +85,11 @@ const DropdownButton = styled(StyledDropdownButton)`
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
     0 2px 54px rgba(0, 0, 0, 0.1);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
+  width: 100vw;
   min-width: 0;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
@@ -107,6 +108,7 @@ const ToolbarSectionMain = styled.div`
   display: flex;
   justify-content: flex-end;
   padding: 0 16px 0 8px;
+  margin-left: auto;
   @media (max-width: 700px) { padding: 0 12px 0 4px; }
 `;
 
