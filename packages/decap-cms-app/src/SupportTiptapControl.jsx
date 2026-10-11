@@ -85,9 +85,8 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         <Command editor={editor} label="Link" action={link} active={editor?.isActive('link')} />
         <Command editor={editor} label="Undo" action={e => e.chain().focus().undo().run()} />
         <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
-      </div>
       </div>}
-      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: attr(data-placeholder); float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
+      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
       <div style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
         <EditorContent editor={editor} />
       </div>
