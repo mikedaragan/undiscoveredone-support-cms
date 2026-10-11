@@ -39,51 +39,36 @@ body.uo-support-list #nc-root{padding-left:288px}
   <div class="uo-unavailable" title="Support reporting is planned"><span class="uo-ico">◫</span>Insights<span class="uo-soon">Soon</span></div>
 </nav>
 <script>
-(function(){
-  function updateNavigation(){
-    var hash=location.hash||'';
-    var isEditor=/\\/collections\\/[^/]+\\/(?:new|entries|entry)/.test(hash);
-    var isLogin=/\\/login/.test(hash);
-    var isList=!isEditor&&!isLogin;
-    document.body.classList.toggle('uo-support-list',isList);
-    document.querySelectorAll('[data-uo-link]').forEach(function(a){
-      var active=a.dataset.uoLink==='media'?hash.indexOf('/media')!==-1:
-        a.dataset.uoLink==='new'?hash.indexOf('/new')!==-1:
-        hash.indexOf('/media')===-1&&hash.indexOf('/new')===-1;
-      if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+(function () {
+  function updateNavigation() {
+    var hash = window.location.hash || '';
+    var isEditor = hash.includes('/new') || hash.includes('/entries/') || hash.includes('/entry/');
+    var isLogin = hash.includes('/login');
+    document.body.classList.toggle('uo-support-list', !isEditor && !isLogin);
+    document.querySelectorAll('[data-uo-link]').forEach(function (link) {
+      var section = link.getAttribute('data-uo-link');
+      var active = section === 'media' ? hash.includes('/media') :
+        section === 'new' ? hash.includes('/new') :
+        !hash.includes('/media') && !isEditor;
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
     });
   }
-  window.addEventListener('hashchange',updateNavigation);
-  window.addEventListener('DOMContentLoaded',updateNavigation);
-  // Decap can replace body children while mounting. Restore our navigation
-  // after its root is created, without interrupting the React editor.
-  var navTemplate=document.getElementById('uo-support-nav')?.outerHTML;
-  var navStyle=document.querySelector('style')?.textContent||'';
-  function ensureSupportNavigation(){
-    if(!document.getElementById('uo-support-nav')&&navTemplate){
-      document.body.insertAdjacentHTML('afterbegin',navTemplate);
-    }
-    if(navStyle&&!document.getElementById('uo-support-style')){
-      var style=document.createElement('style');
-      style.id='uo-support-style';
-      style.textContent=navStyle;
-      document.head.appendChild(style);
-    }
+  function updateAfterMount() {
     updateNavigation();
-    // Hide Decap's redundant collection selector only when our nav is present.
-    if(document.body.classList.contains('uo-support-list')){
-      document.querySelectorAll('h1,h2,h3,h4').forEach(function(el){
-        if(el.textContent.trim()==='Collections'){
-          var panel=el.closest('aside')||el.parentElement?.parentElement;
-          if(panel&&panel.id!=='uo-support-nav'&&!panel.contains(document.getElementById('uo-support-nav'))){
-            panel.style.display='none';
-          }
-        }
-      });
-    }
+    var nav = document.getElementById('uo-support-nav');
+    if (!nav || !document.body.classList.contains('uo-support-list')) return;
+    // Hide only the redundant generic Collections card, not the article list.
+    document.querySelectorAll('h1,h2,h3,h4').forEach(function (heading) {
+      if (heading.textContent.trim() !== 'Collections') return;
+      var panel = heading.closest('aside') || heading.parentElement.parentElement;
+      if (panel && !panel.contains(nav)) panel.style.display = 'none';
+    });
   }
-  window.addEventListener('load',ensureSupportNavigation);
-  setInterval(ensureSupportNavigation,1200);
+  window.addEventListener('hashchange', updateAfterMount);
+  window.addEventListener('DOMContentLoaded', updateAfterMount);
+  window.addEventListener('load', updateAfterMount);
+  setInterval(updateAfterMount, 1500);
 })();
 </script>
 <script src="./decap-cms.js"></script>
