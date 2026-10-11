@@ -22,8 +22,12 @@ function Command({ editor, label, action, active }) {
       onMouseDown={event => event.preventDefault()}
       onClick={() => action(editor)}
       style={{
-        border: 0, borderRadius: 6, padding: '8px 11px', cursor: 'pointer',
-        background: active ? '#e0f5f1' : 'transparent', color: '#263a3c',
+        border: 0,
+        borderRadius: 6,
+        padding: '8px 11px',
+        cursor: 'pointer',
+        background: active ? '#e0f5f1' : 'transparent',
+        color: '#263a3c',
         fontWeight: 650,
       }}
     >
@@ -52,9 +56,15 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   React.useEffect(() => {
     if (!editor) return undefined;
-    function insert() { setShowTools(open => !open); }
-    function undo() { editor.chain().focus().undo().run(); }
-    function redo() { editor.chain().focus().redo().run(); }
+    function insert() {
+      setShowTools(open => !open);
+    }
+    function undo() {
+      editor.chain().focus().undo().run();
+    }
+    function redo() {
+      editor.chain().focus().redo().run();
+    }
     window.addEventListener('uo-support-toggle-insert', insert);
     window.addEventListener('uo-support-undo', undo);
     window.addEventListener('uo-support-redo', redo);
@@ -87,19 +97,72 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
-      {showTools && <div role="toolbar" aria-label="Article formatting" style={{ display: 'flex', gap: 3, flexWrap: 'wrap', padding: 9, border: '1px solid #e8edef', borderRadius: 8, marginBottom: 12 }}>
-        <Command editor={editor} label="Paragraph" action={e => e.chain().focus().setParagraph().run()} />
-        <Command editor={editor} label="H2" action={e => e.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive('heading', { level: 2 })} />
-        <Command editor={editor} label="H3" action={e => e.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive('heading', { level: 3 })} />
-        <Command editor={editor} label="Bold" action={e => e.chain().focus().toggleBold().run()} active={editor?.isActive('bold')} />
-        <Command editor={editor} label="Italic" action={e => e.chain().focus().toggleItalic().run()} active={editor?.isActive('italic')} />
-        <Command editor={editor} label="List" action={e => e.chain().focus().toggleBulletList().run()} active={editor?.isActive('bulletList')} />
-        <Command editor={editor} label="Numbered" action={e => e.chain().focus().toggleOrderedList().run()} active={editor?.isActive('orderedList')} />
-        <Command editor={editor} label="Quote" action={e => e.chain().focus().toggleBlockquote().run()} active={editor?.isActive('blockquote')} />
-        <Command editor={editor} label="Link" action={link} active={editor?.isActive('link')} />
-        <Command editor={editor} label="Undo" action={e => e.chain().focus().undo().run()} />
-        <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
-      </div>}
+      {showTools && (
+        <div
+          role="toolbar"
+          aria-label="Article formatting"
+          style={{
+            display: 'flex',
+            gap: 3,
+            flexWrap: 'wrap',
+            padding: 9,
+            border: '1px solid #e8edef',
+            borderRadius: 8,
+            marginBottom: 12,
+          }}
+        >
+          <Command
+            editor={editor}
+            label="Paragraph"
+            action={e => e.chain().focus().setParagraph().run()}
+          />
+          <Command
+            editor={editor}
+            label="H2"
+            action={e => e.chain().focus().toggleHeading({ level: 2 }).run()}
+            active={editor?.isActive('heading', { level: 2 })}
+          />
+          <Command
+            editor={editor}
+            label="H3"
+            action={e => e.chain().focus().toggleHeading({ level: 3 }).run()}
+            active={editor?.isActive('heading', { level: 3 })}
+          />
+          <Command
+            editor={editor}
+            label="Bold"
+            action={e => e.chain().focus().toggleBold().run()}
+            active={editor?.isActive('bold')}
+          />
+          <Command
+            editor={editor}
+            label="Italic"
+            action={e => e.chain().focus().toggleItalic().run()}
+            active={editor?.isActive('italic')}
+          />
+          <Command
+            editor={editor}
+            label="List"
+            action={e => e.chain().focus().toggleBulletList().run()}
+            active={editor?.isActive('bulletList')}
+          />
+          <Command
+            editor={editor}
+            label="Numbered"
+            action={e => e.chain().focus().toggleOrderedList().run()}
+            active={editor?.isActive('orderedList')}
+          />
+          <Command
+            editor={editor}
+            label="Quote"
+            action={e => e.chain().focus().toggleBlockquote().run()}
+            active={editor?.isActive('blockquote')}
+          />
+          <Command editor={editor} label="Link" action={link} active={editor?.isActive('link')} />
+          <Command editor={editor} label="Undo" action={e => e.chain().focus().undo().run()} />
+          <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
+        </div>
+      )}
       <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
       <div style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
         <EditorContent editor={editor} />

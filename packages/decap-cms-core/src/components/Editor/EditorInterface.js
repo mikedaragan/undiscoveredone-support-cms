@@ -110,9 +110,13 @@ const StyledSplitPane = styled(SplitPane)`
     min-width: 0;
   }
   @media (max-width: 799px) {
-    .Pane1 { width: 100% !important; }
+    .Pane1 {
+      width: 100% !important;
+    }
     .Pane2,
-    .Resizer { display: none !important; }
+    .Resizer {
+      display: none !important;
+    }
   }
 `;
 

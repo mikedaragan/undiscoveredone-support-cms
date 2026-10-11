@@ -21,7 +21,9 @@ export default function SupabaseAuthenticationPage({ onLogin, inProgress, config
       });
       const result = await response.json();
       if (!response.ok || !result.access_token) {
-        throw new Error(result.msg || result.error_description || result.message || 'Sign in failed');
+        throw new Error(
+          result.msg || result.error_description || result.message || 'Sign in failed',
+        );
       }
       // Pass only the access token to Decap's backend authentication handler.
       await onLogin({ token: result.access_token, refresh_token: result.refresh_token });

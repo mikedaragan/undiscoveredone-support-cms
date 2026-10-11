@@ -60,21 +60,29 @@ function CollectionTop({ collection, newEntryUrl, t, children }) {
     <CollectionTopContainer>
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
-        <div css={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginLeft: 'auto' }}>
-        {children}
-        {newEntryUrl ? (
-          <CollectionTopNewButton
-            to={newEntryUrl}
-            dir="auto"
-            aria-label={t('collection.collectionTop.newButtonAriaLabel', {
-              collectionLabel: collectionLabelSingular || collectionLabel,
-            })}
-          >
-            {t('collection.collectionTop.newButton', {
-              collectionLabel: collectionLabelSingular || collectionLabel,
-            })}
-          </CollectionTopNewButton>
-        ) : null}
+        <div
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 12,
+            marginLeft: 'auto',
+          }}
+        >
+          {children}
+          {newEntryUrl ? (
+            <CollectionTopNewButton
+              to={newEntryUrl}
+              dir="auto"
+              aria-label={t('collection.collectionTop.newButtonAriaLabel', {
+                collectionLabel: collectionLabelSingular || collectionLabel,
+              })}
+            >
+              {t('collection.collectionTop.newButton', {
+                collectionLabel: collectionLabelSingular || collectionLabel,
+              })}
+            </CollectionTopNewButton>
+          ) : null}
         </div>
       </CollectionTopRow>
       {collectionDescription ? (

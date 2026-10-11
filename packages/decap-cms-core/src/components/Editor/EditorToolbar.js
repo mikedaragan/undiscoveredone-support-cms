@@ -109,7 +109,9 @@ const ToolbarSectionMain = styled.div`
   justify-content: flex-end;
   padding: 0 16px 0 8px;
   margin-left: auto;
-  @media (max-width: 700px) { padding: 0 12px 0 4px; }
+  @media (max-width: 700px) {
+    padding: 0 12px 0 4px;
+  }
 `;
 
 const ToolbarSubSectionFirst = styled.div`
@@ -129,7 +131,9 @@ const ToolbarSectionBackLink = styled(Link)`
   @media (max-width: 700px) {
     padding: 0 12px;
     border-right-width: 0;
-    > div:last-child { display: none; }
+    > div:last-child {
+      display: none;
+    }
   }
   border-right-width: 1px;
   font-weight: normal;
@@ -154,7 +158,9 @@ const BackArrow = styled.div`
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
-  @media (max-width: 700px) { margin-right: 0; }
+  @media (max-width: 700px) {
+    margin-right: 0;
+  }
 `;
 
 const BackCollection = styled.div`
@@ -688,17 +694,15 @@ export class EditorToolbar extends Component {
   };
 
   render() {
-    const {
-      hasChanged,
-      collection,
-      hasWorkflow,
-      t,
-      editorBackLink,
-    } = this.props;
+    const { hasChanged, collection, hasWorkflow, t, editorBackLink } = this.props;
 
     return (
       <ToolbarContainer>
-        <ToolbarSectionBackLink to={editorBackLink} aria-label="Back to articles" title="Back to articles">
+        <ToolbarSectionBackLink
+          to={editorBackLink}
+          aria-label="Back to articles"
+          title="Back to articles"
+        >
           <BackArrow>←</BackArrow>
           <div>
             <BackCollection>
@@ -714,16 +718,32 @@ export class EditorToolbar extends Component {
           </div>
         </ToolbarSectionBackLink>
         {collection.get('name') === 'help' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8, flexShrink: 0 }}>
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8, flexShrink: 0 }}
+          >
             {[
               ['＋', 'Insert content', 'uo-support-toggle-insert'],
               ['↶', 'Undo', 'uo-support-undo'],
               ['↷', 'Redo', 'uo-support-redo'],
               ['☷', 'Article settings', 'uo-support-toggle-settings'],
             ].map(([symbol, label, eventName]) => (
-              <button key={eventName} type="button" aria-label={label} title={label}
+              <button
+                key={eventName}
+                type="button"
+                aria-label={label}
+                title={label}
                 onClick={() => window.dispatchEvent(new Event(eventName))}
-                style={{ width: 32, height: 34, border: '1px solid #e2e8e9', borderRadius: 6, background: '#fff', color: '#254044', fontSize: 19, cursor: 'pointer' }}>
+                style={{
+                  width: 32,
+                  height: 34,
+                  border: '1px solid #e2e8e9',
+                  borderRadius: 6,
+                  background: '#fff',
+                  color: '#254044',
+                  fontSize: 19,
+                  cursor: 'pointer',
+                }}
+              >
                 {symbol}
               </button>
             ))}
