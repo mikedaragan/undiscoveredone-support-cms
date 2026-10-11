@@ -19,7 +19,7 @@ const Container = styled.aside`
   padding: 20px 12px;
   box-sizing: border-box;
   font: 14px/1.4 system-ui, -apple-system, sans-serif;
-  z-index: 50;
+  z-index: 1000;
   @media (max-width: 799px) {
     position: relative;
     top: auto;
