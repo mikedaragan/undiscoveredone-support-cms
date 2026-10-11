@@ -4,25 +4,33 @@ import { NavLink } from 'react-router-dom';
 
 const Container = styled.aside`
   position: fixed;
-  top: 176px;
-  left: 18px;
-  width: 268px;
-  max-height: calc(100vh - 194px);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 252px;
+  height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
   background: #fff;
-  border: 1px solid #e3e8ed;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px #192a3614;
-  padding: 15px;
+  border: 0;
+  border-right: 1px solid #e3e8ed;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 12px;
   box-sizing: border-box;
   font: 14px/1.4 system-ui, -apple-system, sans-serif;
-  z-index: 5;
+  z-index: 50;
   @media (max-width: 799px) {
     position: relative;
     top: auto;
     left: auto;
+    bottom: auto;
     width: 100%;
+    height: auto;
     max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid #e3e8ed;
+    padding: 12px;
   }
 `;
 const Brand = styled.div`
