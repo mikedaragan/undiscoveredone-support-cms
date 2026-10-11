@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 
 import { Sidebar } from '../Sidebar';
 
@@ -49,7 +49,9 @@ describe('Support Manager Sidebar', () => {
   it('opens and closes the mobile navigation on the toggle event', () => {
     const { container, getAllByRole } = renderSidebar();
 
-    window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
     expect(container.querySelector('#support-mobile-navigation')).toHaveClass('mobile-open');
 
     fireEvent.click(getAllByRole('button', { name: 'Close navigation' })[0]);
@@ -59,7 +61,9 @@ describe('Support Manager Sidebar', () => {
   it('closes the mobile navigation when Escape is pressed', () => {
     const { container } = renderSidebar();
 
-    window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
@@ -67,7 +71,9 @@ describe('Support Manager Sidebar', () => {
   it('closes the mobile navigation after selecting an article link', () => {
     const { container, getByRole } = renderSidebar();
 
-    window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
     fireEvent.click(getByRole('link', { name: /Articles/ }));
     expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
