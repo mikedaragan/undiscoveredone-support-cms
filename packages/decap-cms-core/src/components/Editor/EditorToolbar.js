@@ -689,12 +689,9 @@ export class EditorToolbar extends Component {
 
   render() {
     const {
-      user,
       hasChanged,
-      displayUrl,
       collection,
       hasWorkflow,
-      onLogoutClick,
       t,
       editorBackLink,
     } = this.props;
