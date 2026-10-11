@@ -67,7 +67,7 @@ const AppHeaderContent = styled.div`
 const AppHeaderButton = styled.button`
   ${buttons.button};
   background: none;
-  color: #7b8290;
+  color: #5265A8;
   font-family: inherit;
   font-size: 13px;
   line-height: 1;
@@ -90,7 +90,7 @@ const AppHeaderButton = styled.button`
   }
 
   ${Icon} {
-    color: #b3b9c4;
+    color: #8796C3;
   }
 
   &:hover,
@@ -228,7 +228,7 @@ class Header extends Component {
               onClick={() => window.dispatchEvent(new Event('uo-support-toggle-navigation'))}
               css={css`display:none;@media(max-width:799px){display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border:0;border-radius:8px;background:transparent;color:#263b3f;font-size:23px;cursor:pointer;}`}>☰</button>
             <div css={css`min-width:0;display:flex;flex-direction:column;gap:2px;`}>
-              <strong css={css`font-size:18px;color:#25383b;font-weight:700;white-space:nowrap;`}>Articles</strong>
+              <strong css={css`font-size:18px;color:#202D58;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;white-space:nowrap;`}>Articles</strong>
               <span css={css`font-size:12px;color:#74838a;@media(max-width:500px){display:none;}`}>Manage your support knowledge base</span>
             </div>
           </div>
