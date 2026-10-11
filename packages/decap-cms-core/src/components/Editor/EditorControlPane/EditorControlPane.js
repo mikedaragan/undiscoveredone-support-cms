@@ -98,6 +98,7 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
 export default class ControlPane extends Component {
   state = {
     selectedLocale: this.props.locale,
+    supportSettingsOpen: false,
   };
 
   childRefs = {};
@@ -228,6 +229,69 @@ export default class ControlPane extends Component {
       defaultLocale,
     };
 
+    const supportArticle = collection.get('name') === 'help';
+    const renderField = (field, i) => {
+      const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
+      const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
+      const isHidden = isFieldHidden(field, locale, defaultLocale);
+      const key = i18n ? `${locale}_${i}` : i;
+      return (
+        <EditorControl
+          key={key}
+          field={field}
+          value={getFieldValue({ field, entry, locale, isTranslatable })}
+          fieldsMetaData={fieldsMetaData}
+          fieldsErrors={fieldsErrors}
+          onChange={this.onChange}
+          onValidate={onValidate}
+          controlRef={this.getControlRef(field)}
+          collection={collection}
+          isDisabled={isDuplicate}
+          isHidden={isHidden}
+          isFieldDuplicate={this.isFieldDuplicate}
+          isFieldHidden={this.isFieldHidden}
+          locale={locale}
+        />
+      );
+    };
+    const visibleFields = fields.filter(f => f.get('widget') !== 'hidden');
+    if (supportArticle) {
+      const primary = visibleFields.filter(f => ['title', 'body'].includes(f.get('name')));
+      const settings = visibleFields.filter(f => !['title', 'body'].includes(f.get('name')));
+      return (
+        <div className="uo-support-workspace" css={css`
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 24px clamp(16px, 4vw, 48px) 80px;
+          .uo-support-workspace-header { display:flex; align-items:center; justify-content:flex-end; margin-bottom:24px; }
+          .uo-support-settings-toggle { border:1px solid #d7e2e4; border-radius:9px; padding:10px 15px; background:white; color:#254044; cursor:pointer; font-weight:600; }
+          .uo-support-workspace-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:32px; align-items:start; }
+          .uo-support-workspace-grid.settings-open { grid-template-columns:minmax(0,1fr) 290px; }
+          .uo-support-document { min-width:0; max-width:820px; margin:0 auto; width:100%; }
+          .uo-support-title input { font-size:clamp(28px,3.5vw,44px)!important; font-weight:700; line-height:1.25; border:0!important; box-shadow:none!important; padding:12px 0!important; height:auto!important; }
+          .uo-support-title label { font-size:12px; }
+          .uo-support-settings { background:#fff; border:1px solid #e1e7e9; border-radius:12px; padding:18px; position:sticky; top:85px; min-width:0; }
+          .uo-support-settings h2 { font-size:16px; margin:0 0 18px; color:#24383c; }
+          .uo-support-settings textarea { max-width:100%; }
+          @media(max-width:850px) { .uo-support-workspace-grid.settings-open { grid-template-columns:minmax(0,1fr); } .uo-support-settings { position:static; grid-row:1; } }
+        ` }>
+          <div className="uo-support-workspace-header">
+            <button type="button" className="uo-support-settings-toggle" aria-expanded={this.state.supportSettingsOpen} onClick={() => this.setState(({ supportSettingsOpen }) => ({ supportSettingsOpen: !supportSettingsOpen }))}>
+              {this.state.supportSettingsOpen ? 'Close article settings' : 'Article settings'}
+            </button>
+          </div>
+          <div className={`uo-support-workspace-grid ${this.state.supportSettingsOpen ? 'settings-open' : ''}`}>
+            <main className="uo-support-document" aria-label="Article editor">
+              {primary.map(field => <div key={field.get('name')} className={field.get('name') === 'title' ? 'uo-support-title' : 'uo-support-body'}>{renderField(field, fields.indexOf(field))}</div>)}
+            </main>
+            {this.state.supportSettingsOpen && <aside className="uo-support-settings" aria-label="Article settings">
+              <h2>Article settings</h2>
+              {settings.map(field => <div key={field.get('name')}>{renderField(field, fields.indexOf(field))}</div>)}
+            </aside>}
+          </div>
+        </div>
+      );
+    }
     return (
       <ControlPaneContainer>
         {locales && (
