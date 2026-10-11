@@ -23,7 +23,10 @@ describe('Support Manager Sidebar', () => {
 
     expect(getByText('Support Manager')).toBeInTheDocument();
     expect(getByRole('link', { name: /Articles/ })).toHaveAttribute('href', '/collections/help');
-    expect(getByRole('link', { name: /New article/ })).toHaveAttribute('href', '/collections/help/new');
+    expect(getByRole('link', { name: /New article/ })).toHaveAttribute(
+      'href',
+      '/collections/help/new',
+    );
     expect(getByRole('link', { name: /Media library/ })).toHaveAttribute('href', '/media');
     expect(getByText('Editor')).toBeInTheDocument();
     expect(getByTestId('account-settings')).toBeInTheDocument();
