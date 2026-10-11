@@ -133,6 +133,10 @@ export class Collection extends Component {
           isSearchEnabled={isSearchEnabled}
           searchTerm={searchTerm}
           filterTerm={filterTerm}
+          user={this.props.user}
+          onLogoutClick={this.props.onLogoutClick}
+          displayUrl={this.props.displayUrl}
+          isTestRepo={this.props.isTestRepo}
         />
         <CollectionMain>
           {isSearchResults ? (
