@@ -52,9 +52,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   React.useEffect(() => {
     if (!editor) return undefined;
-    const insert = () => setShowTools(open => !open);
-    const undo = () => editor.chain().focus().undo().run();
-    const redo = () => editor.chain().focus().redo().run();
+    function insert() { setShowTools(open => !open); }
+    function undo() { editor.chain().focus().undo().run(); }
+    function redo() { editor.chain().focus().redo().run(); }
     window.addEventListener('uo-support-toggle-insert', insert);
     window.addEventListener('uo-support-undo', undo);
     window.addEventListener('uo-support-redo', redo);
@@ -73,7 +73,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     }
   }, [editor, value]);
 
-  const link = current => {
+  function link(current) {
     const previous = current.getAttributes('link').href || '';
     const url = window.prompt('Link URL', previous);
     if (url === null) return;
@@ -83,7 +83,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     } else {
       window.alert('Enter an http(s) URL or a relative path starting with /.');
     }
-  };
+  }
 
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
