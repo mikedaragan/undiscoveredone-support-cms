@@ -97,6 +97,7 @@ const ToolbarContainer = styled.div`
   height: 66px;
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box;
 `;
 
 const ToolbarSectionMain = styled.div`
@@ -113,11 +114,11 @@ const ToolbarSubSectionFirst = styled.div`
   display: flex;
   align-items: center;
   min-width: 0;
+  margin-left: auto;
 `;
 
 const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
   justify-content: flex-end;
-  margin-left: auto;
 `;
 
 const ToolbarSectionBackLink = styled(Link)`
