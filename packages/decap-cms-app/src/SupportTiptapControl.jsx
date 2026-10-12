@@ -41,6 +41,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   const [showBlocks, setShowBlocks] = React.useState(false);
   const [selectedBlock, setSelectedBlock] = React.useState(0);
   const [blockQuery, setBlockQuery] = React.useState('');
+  const [menuPosition, setMenuPosition] = React.useState(null);
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
@@ -59,6 +60,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
           event.preventDefault();
           setBlockQuery('');
           setSelectedBlock(0);
+          setMenuPosition(null);
           setShowBlocks(true);
           return true;
         }
@@ -70,7 +72,11 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   React.useEffect(() => {
     if (!editor) return undefined;
-    function insert() {
+    function insert(event) {
+      const trigger = event?.detail?.trigger;
+      const toolbarButton = trigger || Array.from(document.querySelectorAll('button')).find(button => button.getAttribute('aria-label')?.toLowerCase().includes('insert block'));
+      const rect = toolbarButton?.getBoundingClientRect();
+      setMenuPosition(rect ? { top: rect.bottom + 8, left: rect.left } : { top: 170, left: 310 });
       setShowBlocks(open => !open);
       setSelectedBlock(0);
       setBlockQuery('');
@@ -146,7 +152,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
       {showBlocks && (
-        <div role="dialog" aria-label="Insert block" style={{ border: '1px solid #e8edef', borderRadius: 8, padding: 8, maxWidth: 300, boxShadow: '0 8px 24px #00000016' }}>
+        <div role="dialog" aria-label="Insert block" style={{ position: menuPosition ? 'fixed' : 'absolute', top: menuPosition?.top, left: menuPosition?.left, zIndex: 1000, background: '#fff', border: '1px solid #e8edef', borderRadius: 8, padding: 8, width: 300, maxWidth: 'calc(100vw - 24px)', boxShadow: '0 8px 24px #00000016' }}>
           <input
             autoFocus
             type="search"
