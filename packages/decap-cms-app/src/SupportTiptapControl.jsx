@@ -125,6 +125,14 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     block.label.toLowerCase().includes(blockQuery.toLowerCase()),
   );
 
+  function openBottomInserter(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setMenuPosition({ top: Math.min(rect.bottom + 8, window.innerHeight - 360), left: Math.max(12, Math.min(rect.left, window.innerWidth - 312)) });
+    setBlockQuery('');
+    setSelectedBlock(0);
+    setShowBlocks(true);
+  }
+
   function insertBlock(block) {
     if (!editor || !block) return;
     const { state } = editor;
@@ -143,6 +151,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
       .focus(insertAt + 1)
       .run();
     setShowBlocks(false);
+    setMenuPosition(null);
     setShowTools(false);
     setBlockQuery('');
   }
@@ -308,9 +317,12 @@ export default function SupportTiptapControl({ value, onChange, forID, className
           <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
         </div>
       )}
-      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document > p, .uo-tiptap-document > h2, .uo-tiptap-document > h3, .uo-tiptap-document > ul, .uo-tiptap-document > ol, .uo-tiptap-document > blockquote, .uo-tiptap-document > pre, .uo-tiptap-document > hr { position: relative; border: 1px solid transparent; border-radius: 5px; padding: 5px 8px; margin-left: -9px; margin-right: -9px; } .uo-tiptap-document > :hover { border-color: #e0e6f4; } .uo-tiptap-document > :focus-within { border-color: #5265a8; background: #f8f9fd; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
-      <div style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
+      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document > p, .uo-tiptap-document > h2, .uo-tiptap-document > h3, .uo-tiptap-document > ul, .uo-tiptap-document > ol, .uo-tiptap-document > blockquote, .uo-tiptap-document > pre, .uo-tiptap-document > hr { position: relative; border: 1px solid transparent; border-radius: 5px; padding: 5px 8px; margin-left: -9px; margin-right: -9px; } .uo-tiptap-document > :hover { border-color: #e0e6f4; } .uo-tiptap-document > .uo-active-block { border-color: #5265a8; background: #f8f9fd; } .uo-tiptap-document:focus, .uo-tiptap-document.ProseMirror-focused, .uo-tiptap-document:focus-visible { outline: none !important; box-shadow: none !important; border-color: transparent !important; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
+      <div className="uo-support-editor-surface" style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
         <EditorContent editor={editor} />
+        <button type="button" aria-label="Add block at end" onClick={openBottomInserter} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, padding: '9px 12px', border: '1px solid #dfe5ed', borderRadius: 6, background: '#fff', color: '#5265a8', cursor: 'pointer' }}>
+          <span aria-hidden="true" style={{ fontSize: 21, lineHeight: 1 }}>+</span> Add block
+        </button>
       </div>
     </div>
   );
