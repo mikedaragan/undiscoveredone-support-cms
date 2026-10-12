@@ -38,10 +38,15 @@ function Command({ editor, label, action, active }) {
 
 export default function SupportTiptapControl({ value, onChange, forID, className }) {
   const [showTools, setShowTools] = React.useState(false);
+  const [showBlocks, setShowBlocks] = React.useState(false);
+  const [selectedBlock, setSelectedBlock] = React.useState(0);
+  const [blockQuery, setBlockQuery] = React.useState('');
+  const [menuPosition, setMenuPosition] = React.useState(null);
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
     contentType: 'markdown',
+    onUpdate: ({ editor: current }) => onChange(current.getMarkdown()),
     editorProps: {
       attributes: {
         id: forID,
@@ -50,14 +55,35 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         'aria-label': 'Article body',
         style: 'outline:none;min-height:420px;line-height:1.75;font-size:17px;color:#26383c;',
       },
+      handleKeyDown: (view, event) => {
+        if (
+          event.key === '/' &&
+          view.state.selection.empty &&
+          view.state.selection.$from.parent.textContent === ''
+        ) {
+          event.preventDefault();
+          setBlockQuery('');
+          setSelectedBlock(0);
+          setMenuPosition(null);
+          setShowBlocks(true);
+          return true;
+        }
+        if (event.key === 'Escape') setShowBlocks(false);
+        return false;
+      },
     },
-    onUpdate: ({ editor: current }) => onChange(current.getMarkdown()),
   });
 
   React.useEffect(() => {
     if (!editor) return undefined;
-    function insert() {
-      setShowTools(open => !open);
+    function insert(event) {
+      const rect = event?.detail?.anchorRect;
+      setMenuPosition(
+        rect ? { top: rect.bottom + 8, left: Math.min(rect.left, window.innerWidth - 312) } : null,
+      );
+      setShowBlocks(open => !open);
+      setSelectedBlock(0);
+      setBlockQuery('');
     }
     function undo() {
       editor.chain().focus().undo().run();
@@ -83,6 +109,53 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     }
   }, [editor, value]);
 
+  // Insert a new block after the current top-level block instead of changing its type.
+  const blocks = [
+    { label: 'Paragraph', type: 'paragraph' },
+    { label: 'Heading 2', type: 'heading', attrs: { level: 2 } },
+    { label: 'Heading 3', type: 'heading', attrs: { level: 3 } },
+    { label: 'Bullet list', type: 'bulletList' },
+    { label: 'Numbered list', type: 'orderedList' },
+    { label: 'Quote', type: 'blockquote' },
+    { label: 'Code block', type: 'codeBlock' },
+    { label: 'Divider', type: 'horizontalRule' },
+  ];
+
+  const matchingBlocks = blocks.filter(block =>
+    block.label.toLowerCase().includes(blockQuery.toLowerCase()),
+  );
+
+  function openBottomInserter(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setMenuPosition({ top: Math.min(rect.bottom + 8, window.innerHeight - 360), left: Math.max(12, Math.min(rect.left, window.innerWidth - 312)) });
+    setBlockQuery('');
+    setSelectedBlock(0);
+    setShowBlocks(true);
+  }
+
+  function insertBlock(block) {
+    if (!editor || !block) return;
+    const { state } = editor;
+    // The toolbar inserter appends a new top-level block to the document.
+    // Using the current selection here can insert at the top after focus moves to the menu.
+    const insertAt = state.doc.content.size;
+    const content =
+      block.type === 'bulletList' || block.type === 'orderedList'
+        ? { type: block.type, content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }
+        : block.type === 'blockquote'
+        ? { type: 'blockquote', content: [{ type: 'paragraph' }] }
+        : { type: block.type, ...(block.attrs ? { attrs: block.attrs } : {}) };
+    editor
+      .chain()
+      .insertContentAt(insertAt, content)
+      .focus(insertAt + 1)
+      .run();
+    setShowBlocks(false);
+    setMenuPosition(null);
+    setShowTools(false);
+    setBlockQuery('');
+  }
+
   function link(current) {
     const previous = current.getAttributes('link').href || '';
     const url = window.prompt('Link URL', previous);
@@ -97,6 +170,87 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
+      {showBlocks && (
+        <div
+          role="dialog"
+          aria-label="Insert block"
+          style={{
+            position: menuPosition ? 'fixed' : 'absolute',
+            top: menuPosition?.top,
+            left: menuPosition?.left,
+            zIndex: 1000,
+            background: '#fff',
+            border: '1px solid #e8edef',
+            borderRadius: 8,
+            padding: 8,
+            width: 300,
+            maxWidth: 'calc(100vw - 24px)',
+            boxShadow: '0 8px 24px #00000016',
+          }}
+        >
+          <input
+            autoFocus
+            type="search"
+            aria-label="Search blocks"
+            placeholder="Search blocks..."
+            value={blockQuery}
+            onChange={event => {
+              setBlockQuery(event.target.value);
+              setSelectedBlock(0);
+            }}
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                setShowBlocks(false);
+                editor?.chain().focus().run();
+              }
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setSelectedBlock(i => Math.min(i + 1, matchingBlocks.length - 1));
+              }
+              if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setSelectedBlock(i => Math.max(i - 1, 0));
+              }
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                insertBlock(matchingBlocks[selectedBlock]);
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: 10,
+              border: '1px solid #dce4e8',
+              borderRadius: 6,
+              marginBottom: 6,
+            }}
+          />
+          <div role="listbox" aria-label="Available blocks">
+            {matchingBlocks.length === 0 && <div style={{ padding: 10 }}>No matching blocks</div>}
+            {matchingBlocks.map((block, index) => (
+              <button
+                key={block.label}
+                role="option"
+                aria-selected={index === selectedBlock}
+                type="button"
+                onMouseDown={event => event.preventDefault()}
+                onClick={() => insertBlock(block)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: 10,
+                  textAlign: 'left',
+                  border: 0,
+                  borderRadius: 6,
+                  background: index === selectedBlock ? '#edf0fb' : 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                {block.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       {showTools && (
         <div
           role="toolbar"
@@ -163,9 +317,12 @@ export default function SupportTiptapControl({ value, onChange, forID, className
           <Command editor={editor} label="Redo" action={e => e.chain().focus().redo().run()} />
         </div>
       )}
-      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
-      <div style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
+      <style>{`.uo-tiptap-document { min-height: 360px; outline: none; line-height: 1.75; font-size: 18px; color: #26383c; } .uo-tiptap-document > p:first-child:has(> br.ProseMirror-trailingBreak)::before { content: 'Type / to choose a block'; float: left; color: #9aa6a8; pointer-events: none; height: 0; } .uo-tiptap-document > p, .uo-tiptap-document > h2, .uo-tiptap-document > h3, .uo-tiptap-document > ul, .uo-tiptap-document > ol, .uo-tiptap-document > blockquote, .uo-tiptap-document > pre, .uo-tiptap-document > hr { position: relative; border: 1px solid transparent; border-radius: 5px; padding: 5px 8px; margin-left: -9px; margin-right: -9px; } .uo-tiptap-document > :hover { border-color: #e0e6f4; } .uo-tiptap-document > .uo-active-block { border-color: #5265a8; background: #f8f9fd; } .uo-tiptap-document:focus, .uo-tiptap-document.ProseMirror-focused, .uo-tiptap-document:focus-visible { outline: none !important; box-shadow: none !important; border-color: transparent !important; } .uo-tiptap-document h2 { font-size: 27px; font-weight: 650; margin: 22px 0 12px; } .uo-tiptap-document h3 { font-size: 22px; font-weight: 650; margin: 18px 0 10px; } .uo-tiptap-document ul { list-style: disc; padding-left: 28px; } .uo-tiptap-document ol { list-style: decimal; padding-left: 28px; } .uo-tiptap-document blockquote { border-left: 3px solid #00a896; padding-left: 16px; }`}</style>
+      <div className="uo-support-editor-surface" style={{ maxWidth: 780, margin: '0 auto', padding: '8px 0 32px' }}>
         <EditorContent editor={editor} />
+        <button type="button" aria-label="Add block at end" onClick={openBottomInserter} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, padding: '9px 12px', border: '1px solid #dfe5ed', borderRadius: 6, background: '#fff', color: '#5265a8', cursor: 'pointer' }}>
+          <span aria-hidden="true" style={{ fontSize: 21, lineHeight: 1 }}>+</span> Add block
+        </button>
       </div>
     </div>
   );

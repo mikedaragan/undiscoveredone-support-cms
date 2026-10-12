@@ -722,7 +722,7 @@ export class EditorToolbar extends Component {
             style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8, flexShrink: 0 }}
           >
             {[
-              ['＋', 'Insert content', 'uo-support-toggle-insert'],
+              ['＋', 'Insert block', 'uo-support-toggle-insert'],
               ['↶', 'Undo', 'uo-support-undo'],
               ['↷', 'Redo', 'uo-support-redo'],
               ['☷', 'Article settings', 'uo-support-toggle-settings'],
@@ -732,7 +732,13 @@ export class EditorToolbar extends Component {
                 type="button"
                 aria-label={label}
                 title={label}
-                onClick={() => window.dispatchEvent(new Event(eventName))}
+                onClick={event =>
+                  window.dispatchEvent(
+                    new CustomEvent(eventName, {
+                      detail: { anchorRect: event.currentTarget.getBoundingClientRect().toJSON() },
+                    }),
+                  )
+                }
                 style={{
                   width: 32,
                   height: 34,
