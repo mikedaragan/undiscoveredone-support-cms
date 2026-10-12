@@ -73,10 +73,8 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   React.useEffect(() => {
     if (!editor) return undefined;
     function insert(event) {
-      const trigger = event?.detail?.trigger;
-      const toolbarButton = trigger || Array.from(document.querySelectorAll('button')).find(button => button.getAttribute('aria-label')?.toLowerCase().includes('insert block'));
-      const rect = toolbarButton?.getBoundingClientRect();
-      setMenuPosition(rect ? { top: rect.bottom + 8, left: rect.left } : { top: 170, left: 310 });
+      const rect = event?.detail?.anchorRect;
+      setMenuPosition(rect ? { top: rect.bottom + 8, left: Math.min(rect.left, window.innerWidth - 312) } : null);
       setShowBlocks(open => !open);
       setSelectedBlock(0);
       setBlockQuery('');
