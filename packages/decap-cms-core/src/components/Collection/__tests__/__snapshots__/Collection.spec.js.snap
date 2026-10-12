@@ -3,26 +3,22 @@
 exports[`Collection should render connected component 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  gap: 20px;
-  margin: 12px 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-@media (min-width: 500px) {
-  .emotion-0 {
-    margin: 28px 18px;
-  }
+.emotion-2 {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px clamp(16px, 2.5vw, 36px);
 }
 
 @media (min-width: 800px) {
   .emotion-2 {
-    padding-left: 280px;
+    width: calc(100% - 252px);
+    margin-left: 252px;
   }
 }
 
@@ -41,14 +37,15 @@ exports[`Collection should render connected component 1`] = `
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] }"
         newentryurl=""
-      />
-      <mock-collection-controls
-        filter="Map {}"
-        group="Map {}"
-        sortablefields=""
-        viewfilters=""
-        viewgroups=""
-      />
+      >
+        <mock-collection-controls
+          filter="Map {}"
+          group="Map {}"
+          sortablefields=""
+          viewfilters=""
+          viewgroups=""
+        />
+      </mock-collection-top>
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] }"
         filterterm=""
@@ -61,26 +58,22 @@ exports[`Collection should render connected component 1`] = `
 exports[`Collection should render with collection with create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  gap: 20px;
-  margin: 12px 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-@media (min-width: 500px) {
-  .emotion-0 {
-    margin: 28px 18px;
-  }
+.emotion-2 {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px clamp(16px, 2.5vw, 36px);
 }
 
 @media (min-width: 800px) {
   .emotion-2 {
-    padding-left: 280px;
+    width: calc(100% - 252px);
+    margin-left: 252px;
   }
 }
 
@@ -97,10 +90,11 @@ exports[`Collection should render with collection with create url 1`] = `
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         newentryurl=""
-      />
-      <mock-collection-controls
-        viewstyle="list"
-      />
+      >
+        <mock-collection-controls
+          viewstyle="list"
+        />
+      </mock-collection-top>
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         viewstyle="list"
@@ -113,26 +107,22 @@ exports[`Collection should render with collection with create url 1`] = `
 exports[`Collection should render with collection with create url and path 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  gap: 20px;
-  margin: 12px 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-@media (min-width: 500px) {
-  .emotion-0 {
-    margin: 28px 18px;
-  }
+.emotion-2 {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px clamp(16px, 2.5vw, 36px);
 }
 
 @media (min-width: 800px) {
   .emotion-2 {
-    padding-left: 280px;
+    width: calc(100% - 252px);
+    margin-left: 252px;
   }
 }
 
@@ -150,10 +140,11 @@ exports[`Collection should render with collection with create url and path 1`] =
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         newentryurl=""
-      />
-      <mock-collection-controls
-        viewstyle="list"
-      />
+      >
+        <mock-collection-controls
+          viewstyle="list"
+        />
+      </mock-collection-top>
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         filterterm="dir1/dir2"
@@ -167,26 +158,22 @@ exports[`Collection should render with collection with create url and path 1`] =
 exports[`Collection should render with collection without create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  gap: 20px;
-  margin: 12px 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-@media (min-width: 500px) {
-  .emotion-0 {
-    margin: 28px 18px;
-  }
+.emotion-2 {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px clamp(16px, 2.5vw, 36px);
 }
 
 @media (min-width: 800px) {
   .emotion-2 {
-    padding-left: 280px;
+    width: calc(100% - 252px);
+    margin-left: 252px;
   }
 }
 
@@ -203,10 +190,11 @@ exports[`Collection should render with collection without create url 1`] = `
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
         newentryurl=""
-      />
-      <mock-collection-controls
-        viewstyle="list"
-      />
+      >
+        <mock-collection-controls
+          viewstyle="list"
+        />
+      </mock-collection-top>
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
         viewstyle="list"

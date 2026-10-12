@@ -110,8 +110,13 @@ const StyledSplitPane = styled(SplitPane)`
     min-width: 0;
   }
   @media (max-width: 799px) {
-    .Pane1 { width: 100% !important; }
-    .Pane2, .Resizer { display: none !important; }
+    .Pane1 {
+      width: 100% !important;
+    }
+    .Pane2,
+    .Resizer {
+      display: none !important;
+    }
   }
 `;
 
@@ -150,7 +155,7 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
   padding: 28px clamp(16px, 3vw, 48px) 64px;
   position: relative;
   overflow-x: hidden;
-  background: #ffffff;
+  background: #fff;
   box-sizing: border-box;
   @media (max-width: 799px) {
     padding: 20px 16px 80px;

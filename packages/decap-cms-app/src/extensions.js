@@ -22,8 +22,8 @@ import DecapCmsWidgetUuid from '../../decap-cms-widget-uuid/src/index.js';
 import image from '../../decap-cms-editor-component-image/src/index.js';
 // Locales
 import * as locales from '../../decap-cms-locales/src/index.js';
-
 import SupabaseBackend from '../../../deployment/support-editor/supabase-backend';
+import SupportTiptapControl from './SupportTiptapControl.jsx';
 
 // Register only the Supabase backend used by the Support Editor.
 CMS.registerBackend('supabase', SupabaseBackend);
@@ -46,6 +46,7 @@ CMS.registerWidget([
   DecapCmsWidgetColorString.Widget(),
   DecapCmsWidgetUuid.Widget(),
 ]);
+CMS.registerWidget('support-tiptap', SupportTiptapControl);
 CMS.registerEditorComponent(image);
 CMS.registerEditorComponent({
   id: 'code-block',
@@ -53,6 +54,6 @@ CMS.registerEditorComponent({
   widget: 'code',
   type: 'code-block',
 });
-Object.keys(locales).forEach(locale => {
-  CMS.registerLocale(locale, locales[locale]);
+Object.entries(locales).forEach(([locale, translation]) => {
+  CMS.registerLocale(locale, translation);
 });

@@ -36,38 +36,103 @@ export default class SupabaseBackend {
     this.key = backend.supabase_anon_key;
     if (!/^https:\/\//.test(this.url) || !this.key) throw new Error('Supabase URL and publishable key required');
     this.session = null;
+    this.refreshPromise = null;
+    this.refreshStorageKey = 'uo-support-refresh-token';
   }
   authComponent() { return SupabaseAuthenticationPage; }
+  async refreshSession() {
+    if (this.refreshPromise) return this.refreshPromise;
+    const refreshToken = this.session?.refresh_token || sessionStorage.getItem(this.refreshStorageKey);
+    if (!refreshToken) throw new Error('Your session expired. Please sign out and sign in again.');
+    this.refreshPromise = (async () => {
+      const response = await fetch(this.url + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST',
+        headers: { apikey: this.key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+      if (!response.ok) {
+        this.session = null;
+        sessionStorage.removeItem(this.refreshStorageKey);
+        throw new Error('Your session expired. Please sign out and sign in again.');
+      }
+      const session = await response.json();
+      if (!session.access_token || !session.refresh_token) {
+        throw new Error('Unable to refresh your session. Please sign in again.');
+      }
+      this.session = session;
+      sessionStorage.setItem(this.refreshStorageKey, session.refresh_token);
+      return session.access_token;
+    })();
+    try {
+      return await this.refreshPromise;
+    } finally {
+      this.refreshPromise = null;
+    }
+  }
   async request(path, options = {}) {
-    const response = await fetch(this.url + path, {
+    const send = token => fetch(this.url + path, {
       ...options,
       headers: {
         apikey: this.key,
-        Authorization: 'Bearer ' + (this.session?.access_token || this.key),
+        Authorization: 'Bearer ' + token,
         ...(options.headers || {}),
       },
     });
-    if (!response.ok) throw new Error('Supabase ' + response.status + ': ' + (await response.text()).slice(0, 500));
+    if (!this.session?.access_token) {
+      throw new Error('Sign in to access the Support Manager.');
+    }
+    let response = await send(this.session.access_token);
+    if (response.status === 401) {
+      // Retry the original request once after refreshing the expired access token.
+      const token = await this.refreshSession();
+      response = await send(token);
+    }
+    if (!response.ok) {
+      const detail = (await response.text()).slice(0, 500);
+      throw new Error('Supabase ' + response.status + ': ' + detail);
+    }
     if (response.status === 204) return null;
     const text = await response.text();
     return text ? JSON.parse(text) : null;
   }
   async authenticate(credentials) {
-    // Decap credentials must be an actual Supabase access token, not a password.
     const token = credentials?.token;
     if (!token || typeof token !== 'string') throw new Error('A Supabase access token is required');
+    const refreshToken = credentials?.refresh_token || sessionStorage.getItem(this.refreshStorageKey);
     const response = await fetch(this.url + '/auth/v1/user', {
       headers: { apikey: this.key, Authorization: 'Bearer ' + token },
     });
-    if (!response.ok) throw new Error('Supabase authentication failed');
-    const user = await response.json();
-    this.session = { access_token: token };
-    // Writes remain restricted by database RLS.
-    return { token, name: user.user_metadata?.full_name || user.email || 'Editor', email: user.email, login: user.id };
+    let user;
+    if (response.ok) {
+      user = await response.json();
+      this.session = { access_token: token, refresh_token: refreshToken };
+      if (refreshToken) sessionStorage.setItem(this.refreshStorageKey, refreshToken);
+    } else if (response.status === 401 && refreshToken) {
+      this.session = { access_token: token, refresh_token: refreshToken };
+      await this.refreshSession();
+      const retry = await fetch(this.url + '/auth/v1/user', {
+        headers: { apikey: this.key, Authorization: 'Bearer ' + this.session.access_token },
+      });
+      if (!retry.ok) throw new Error('Your session expired. Please sign in again.');
+      user = await retry.json();
+    } else {
+      throw new Error('Your session expired. Please sign in again.');
+    }
+    return {
+      token: this.session.access_token,
+      name: user.user_metadata?.full_name || user.email || 'Editor',
+      email: user.email,
+      login: user.id,
+    };
   }
   async restoreUser(user) { return this.authenticate(user); }
-  async logout() { this.session = null; }
-  async getToken() { return this.session?.access_token || null; }
+  async logout() {
+    this.session = null;
+    sessionStorage.removeItem(this.refreshStorageKey);
+  }
+  async getToken() {
+    return this.session?.access_token || null;
+  }
   async categories() {
     return this.request('/rest/v1/support_categories?select=id,slug&limit=1000');
   }

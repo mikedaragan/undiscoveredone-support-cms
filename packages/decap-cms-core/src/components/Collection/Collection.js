@@ -5,7 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
-import { lengths, components } from 'decap-cms-ui-default';
+import { components } from 'decap-cms-ui-default';
 
 import { getNewEntryUrl } from '../../lib/urlHelper';
 import Sidebar from './Sidebar';
@@ -28,18 +28,19 @@ import {
 import { selectCanCreateNewEntry } from '../../reducers';
 
 const CollectionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin: ${lengths.pageMarginMobile};
-  @media (min-width: 500px) {
-    margin: ${lengths.pageMargin};
-  }
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 `;
 
 const CollectionMain = styled.main`
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px clamp(16px, 2.5vw, 36px);
   @media (min-width: 800px) {
-    padding-left: 252px;
+    width: calc(100% - 252px);
+    margin-left: 252px;
   }
 `;
 
@@ -133,6 +134,10 @@ export class Collection extends Component {
           isSearchEnabled={isSearchEnabled}
           searchTerm={searchTerm}
           filterTerm={filterTerm}
+          user={this.props.user}
+          onLogoutClick={this.props.onLogoutClick}
+          displayUrl={this.props.displayUrl}
+          isTestRepo={this.props.isTestRepo}
         />
         <CollectionMain>
           {isSearchResults ? (
@@ -143,21 +148,22 @@ export class Collection extends Component {
             </SearchResultContainer>
           ) : (
             <>
-              <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
-              <CollectionControls
-                viewStyle={viewStyle}
-                onChangeViewStyle={onChangeViewStyle}
-                sortableFields={sortableFields}
-                onSortClick={onSortClick}
-                sort={sort}
-                viewFilters={viewFilters}
-                viewGroups={viewGroups}
-                t={t}
-                onFilterClick={onFilterClick}
-                onGroupClick={onGroupClick}
-                filter={filter}
-                group={group}
-              />
+              <CollectionTop collection={collection} newEntryUrl={newEntryUrl}>
+                <CollectionControls
+                  viewStyle={viewStyle}
+                  onChangeViewStyle={onChangeViewStyle}
+                  sortableFields={sortableFields}
+                  onSortClick={onSortClick}
+                  sort={sort}
+                  viewFilters={viewFilters}
+                  viewGroups={viewGroups}
+                  t={t}
+                  onFilterClick={onFilterClick}
+                  onGroupClick={onGroupClick}
+                  filter={filter}
+                  group={group}
+                />
+              </CollectionTop>
             </>
           )}
           {isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection()}

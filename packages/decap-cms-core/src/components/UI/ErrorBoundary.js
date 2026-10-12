@@ -210,14 +210,28 @@ export class ErrorBoundary extends Component {
         </p>
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
-        <p><strong>Error: {errorTitle}</strong></p>
+        <p>
+          <strong>Error: {errorTitle}</strong>
+        </p>
         {typeof window !== 'undefined' && window.__supportInvalidTag && (
           <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
-            {'Invalid DOM element: ' + window.__supportInvalidTag + '\n' + (window.__supportInvalidTagStack || '')}
+            {'Invalid DOM element: ' +
+              window.__supportInvalidTag +
+              '\n' +
+              (window.__supportInvalidTagStack || '')}
           </pre>
         )}
-        <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>{errorMessage}</pre>
-        {componentStack && <><h2>React component stack</h2><pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>{componentStack}</pre></>}
+        <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+          {errorMessage}
+        </pre>
+        {componentStack && (
+          <>
+            <h2>React component stack</h2>
+            <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+              {componentStack}
+            </pre>
+          </>
+        )}
         {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
       </ErrorBoundaryContainer>
     );

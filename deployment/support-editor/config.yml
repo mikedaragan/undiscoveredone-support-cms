@@ -11,6 +11,8 @@ public_folder: "/support-images"
 collections:
   - name: help
     label: Help Articles
+    editor:
+      preview: false
     folder: articles
     create: true
     delete: true
@@ -22,4 +24,4 @@ collections:
       - { label: Summary, name: summary, widget: text, required: false }
       - { label: Category, name: category, widget: string, required: false }
       - { label: Status, name: status, widget: select, options: [draft, published, archived], default: draft }
-      - { label: Body, name: body, widget: markdown }
+      - { label: Body, name: body, widget: support-tiptap }
