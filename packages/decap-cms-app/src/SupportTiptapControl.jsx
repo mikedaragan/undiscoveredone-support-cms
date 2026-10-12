@@ -132,6 +132,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         : { type: block.type, ...(block.attrs ? { attrs: block.attrs } : {}) };
     editor.chain().focus().insertContentAt(insertAt, content).run();
     setShowBlocks(false);
+    setShowTools(false);
     setBlockQuery('');
   }
 
