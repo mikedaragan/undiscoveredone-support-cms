@@ -732,7 +732,13 @@ export class EditorToolbar extends Component {
                 type="button"
                 aria-label={label}
                 title={label}
-                onClick={event => window.dispatchEvent(new CustomEvent(eventName, { detail: { anchorRect: event.currentTarget.getBoundingClientRect().toJSON() } }))}
+                onClick={event =>
+                  window.dispatchEvent(
+                    new CustomEvent(eventName, {
+                      detail: { anchorRect: event.currentTarget.getBoundingClientRect().toJSON() },
+                    }),
+                  )
+                }
                 style={{
                   width: 32,
                   height: 34,

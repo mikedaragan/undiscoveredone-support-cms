@@ -56,7 +56,11 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         style: 'outline:none;min-height:420px;line-height:1.75;font-size:17px;color:#26383c;',
       },
       handleKeyDown: (view, event) => {
-        if (event.key === '/' && view.state.selection.empty && view.state.selection.$from.parent.textContent === '') {
+        if (
+          event.key === '/' &&
+          view.state.selection.empty &&
+          view.state.selection.$from.parent.textContent === ''
+        ) {
           event.preventDefault();
           setBlockQuery('');
           setSelectedBlock(0);
@@ -74,7 +78,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     if (!editor) return undefined;
     function insert(event) {
       const rect = event?.detail?.anchorRect;
-      setMenuPosition(rect ? { top: rect.bottom + 8, left: Math.min(rect.left, window.innerWidth - 312) } : null);
+      setMenuPosition(
+        rect ? { top: rect.bottom + 8, left: Math.min(rect.left, window.innerWidth - 312) } : null,
+      );
       setShowBlocks(open => !open);
       setSelectedBlock(0);
       setBlockQuery('');
@@ -115,7 +121,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     { label: 'Divider', type: 'horizontalRule' },
   ];
 
-  const matchingBlocks = blocks.filter(block => block.label.toLowerCase().includes(blockQuery.toLowerCase()));
+  const matchingBlocks = blocks.filter(block =>
+    block.label.toLowerCase().includes(blockQuery.toLowerCase()),
+  );
 
   function insertBlock(block) {
     if (!editor || !block) return;
@@ -123,12 +131,17 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     // The toolbar inserter appends a new top-level block to the document.
     // Using the current selection here can insert at the top after focus moves to the menu.
     const insertAt = state.doc.content.size;
-    const content = block.type === 'bulletList' || block.type === 'orderedList'
-      ? { type: block.type, content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }
-      : block.type === 'blockquote'
+    const content =
+      block.type === 'bulletList' || block.type === 'orderedList'
+        ? { type: block.type, content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }
+        : block.type === 'blockquote'
         ? { type: 'blockquote', content: [{ type: 'paragraph' }] }
         : { type: block.type, ...(block.attrs ? { attrs: block.attrs } : {}) };
-    editor.chain().insertContentAt(insertAt, content).focus(insertAt + 1).run();
+    editor
+      .chain()
+      .insertContentAt(insertAt, content)
+      .focus(insertAt + 1)
+      .run();
     setShowBlocks(false);
     setShowTools(false);
     setBlockQuery('');
@@ -149,30 +162,80 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
       {showBlocks && (
-        <div role="dialog" aria-label="Insert block" style={{ position: menuPosition ? 'fixed' : 'absolute', top: menuPosition?.top, left: menuPosition?.left, zIndex: 1000, background: '#fff', border: '1px solid #e8edef', borderRadius: 8, padding: 8, width: 300, maxWidth: 'calc(100vw - 24px)', boxShadow: '0 8px 24px #00000016' }}>
+        <div
+          role="dialog"
+          aria-label="Insert block"
+          style={{
+            position: menuPosition ? 'fixed' : 'absolute',
+            top: menuPosition?.top,
+            left: menuPosition?.left,
+            zIndex: 1000,
+            background: '#fff',
+            border: '1px solid #e8edef',
+            borderRadius: 8,
+            padding: 8,
+            width: 300,
+            maxWidth: 'calc(100vw - 24px)',
+            boxShadow: '0 8px 24px #00000016',
+          }}
+        >
           <input
             autoFocus
             type="search"
             aria-label="Search blocks"
             placeholder="Search blocks..."
             value={blockQuery}
-            onChange={event => { setBlockQuery(event.target.value); setSelectedBlock(0); }}
-            onKeyDown={event => {
-              if (event.key === 'Escape') { setShowBlocks(false); editor?.chain().focus().run(); }
-              if (event.key === 'ArrowDown') { event.preventDefault(); setSelectedBlock(i => Math.min(i + 1, matchingBlocks.length - 1)); }
-              if (event.key === 'ArrowUp') { event.preventDefault(); setSelectedBlock(i => Math.max(i - 1, 0)); }
-              if (event.key === 'Enter') { event.preventDefault(); insertBlock(matchingBlocks[selectedBlock]); }
+            onChange={event => {
+              setBlockQuery(event.target.value);
+              setSelectedBlock(0);
             }}
-            style={{ width: '100%', padding: 10, border: '1px solid #dce4e8', borderRadius: 6, marginBottom: 6 }}
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                setShowBlocks(false);
+                editor?.chain().focus().run();
+              }
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setSelectedBlock(i => Math.min(i + 1, matchingBlocks.length - 1));
+              }
+              if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setSelectedBlock(i => Math.max(i - 1, 0));
+              }
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                insertBlock(matchingBlocks[selectedBlock]);
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: 10,
+              border: '1px solid #dce4e8',
+              borderRadius: 6,
+              marginBottom: 6,
+            }}
           />
           <div role="listbox" aria-label="Available blocks">
             {matchingBlocks.length === 0 && <div style={{ padding: 10 }}>No matching blocks</div>}
             {matchingBlocks.map((block, index) => (
-              <button key={block.label} role="option" aria-selected={index === selectedBlock}
-                type="button" onMouseDown={event => event.preventDefault()}
+              <button
+                key={block.label}
+                role="option"
+                aria-selected={index === selectedBlock}
+                type="button"
+                onMouseDown={event => event.preventDefault()}
                 onClick={() => insertBlock(block)}
-                style={{ display: 'block', width: '100%', padding: 10, textAlign: 'left', border: 0,
-                  borderRadius: 6, background: index === selectedBlock ? '#edf0fb' : 'white', cursor: 'pointer' }}>
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: 10,
+                  textAlign: 'left',
+                  border: 0,
+                  borderRadius: 6,
+                  background: index === selectedBlock ? '#edf0fb' : 'white',
+                  cursor: 'pointer',
+                }}
+              >
                 {block.label}
               </button>
             ))}
