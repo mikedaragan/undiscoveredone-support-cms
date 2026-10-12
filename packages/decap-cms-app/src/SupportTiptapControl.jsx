@@ -39,6 +39,8 @@ function Command({ editor, label, action, active }) {
 export default function SupportTiptapControl({ value, onChange, forID, className }) {
   const [showTools, setShowTools] = React.useState(false);
   const [showBlocks, setShowBlocks] = React.useState(false);
+  const [selectedBlock, setSelectedBlock] = React.useState(0);
+  const [blockQuery, setBlockQuery] = React.useState('');
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
@@ -55,6 +57,8 @@ export default function SupportTiptapControl({ value, onChange, forID, className
       handleKeyDown: (view, event) => {
         if (event.key === '/' && view.state.selection.empty && view.state.selection.$from.parent.textContent === '') {
           event.preventDefault();
+          setBlockQuery('');
+          setSelectedBlock(0);
           setShowBlocks(true);
           return true;
         }
@@ -67,7 +71,9 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   React.useEffect(() => {
     if (!editor) return undefined;
     function insert() {
-      setShowTools(open => !open);
+      setShowBlocks(open => !open);
+      setSelectedBlock(0);
+      setBlockQuery('');
     }
     function undo() {
       editor.chain().focus().undo().run();
@@ -104,6 +110,15 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     { label: 'Divider', run: e => e.chain().focus().setHorizontalRule().run() },
   ];
 
+  const matchingBlocks = blocks.filter(block => block.label.toLowerCase().includes(blockQuery.toLowerCase()));
+
+  function insertBlock(block) {
+    if (!editor || !block) return;
+    block.run(editor);
+    setShowBlocks(false);
+    setBlockQuery('');
+  }
+
   function link(current) {
     const previous = current.getAttributes('link').href || '';
     const url = window.prompt('Link URL', previous);
@@ -119,14 +134,34 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
       {showBlocks && (
-        <div role="menu" aria-label="Insert block" style={{ border: '1px solid #e8edef', borderRadius: 8, padding: 8, maxWidth: 280, boxShadow: '0 8px 24px #00000016' }}>
-          {blocks.map(block => (
-            <button key={block.label} role="menuitem" type="button" onMouseDown={event => event.preventDefault()}
-              onClick={() => { block.run(editor); setShowBlocks(false); }}
-              style={{ display: 'block', width: '100%', padding: 10, textAlign: 'left', border: 0, background: 'white', cursor: 'pointer' }}>
-              {block.label}
-            </button>
-          ))}
+        <div role="dialog" aria-label="Insert block" style={{ border: '1px solid #e8edef', borderRadius: 8, padding: 8, maxWidth: 300, boxShadow: '0 8px 24px #00000016' }}>
+          <input
+            autoFocus
+            type="search"
+            aria-label="Search blocks"
+            placeholder="Search blocks..."
+            value={blockQuery}
+            onChange={event => { setBlockQuery(event.target.value); setSelectedBlock(0); }}
+            onKeyDown={event => {
+              if (event.key === 'Escape') { setShowBlocks(false); editor?.chain().focus().run(); }
+              if (event.key === 'ArrowDown') { event.preventDefault(); setSelectedBlock(i => Math.min(i + 1, matchingBlocks.length - 1)); }
+              if (event.key === 'ArrowUp') { event.preventDefault(); setSelectedBlock(i => Math.max(i - 1, 0)); }
+              if (event.key === 'Enter') { event.preventDefault(); insertBlock(matchingBlocks[selectedBlock]); }
+            }}
+            style={{ width: '100%', padding: 10, border: '1px solid #dce4e8', borderRadius: 6, marginBottom: 6 }}
+          />
+          <div role="listbox" aria-label="Available blocks">
+            {matchingBlocks.length === 0 && <div style={{ padding: 10 }}>No matching blocks</div>}
+            {matchingBlocks.map((block, index) => (
+              <button key={block.label} role="option" aria-selected={index === selectedBlock}
+                type="button" onMouseDown={event => event.preventDefault()}
+                onClick={() => insertBlock(block)}
+                style={{ display: 'block', width: '100%', padding: 10, textAlign: 'left', border: 0,
+                  borderRadius: 6, background: index === selectedBlock ? '#edf0fb' : 'white', cursor: 'pointer' }}>
+                {block.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
       {showTools && (
