@@ -38,6 +38,7 @@ function Command({ editor, label, action, active }) {
 
 export default function SupportTiptapControl({ value, onChange, forID, className }) {
   const [showTools, setShowTools] = React.useState(false);
+  const [showBlocks, setShowBlocks] = React.useState(false);
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
@@ -50,8 +51,16 @@ export default function SupportTiptapControl({ value, onChange, forID, className
         'aria-label': 'Article body',
         style: 'outline:none;min-height:420px;line-height:1.75;font-size:17px;color:#26383c;',
       },
+      handleKeyDown: (view, event) => {
+        if (event.key === '/' && view.state.selection.empty && view.state.selection.$from.parent.textContent === '') {
+          event.preventDefault();
+          setShowBlocks(true);
+          return true;
+        }
+        if (event.key === 'Escape') setShowBlocks(false);
+        return false;
+      },
     },
-    onUpdate: ({ editor: current }) => onChange(current.getMarkdown()),
   });
 
   React.useEffect(() => {
@@ -83,6 +92,17 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     }
   }, [editor, value]);
 
+  const blocks = [
+    { label: 'Paragraph', run: e => e.chain().focus().setParagraph().run() },
+    { label: 'Heading 2', run: e => e.chain().focus().setHeading({ level: 2 }).run() },
+    { label: 'Heading 3', run: e => e.chain().focus().setHeading({ level: 3 }).run() },
+    { label: 'Bullet list', run: e => e.chain().focus().toggleBulletList().run() },
+    { label: 'Numbered list', run: e => e.chain().focus().toggleOrderedList().run() },
+    { label: 'Quote', run: e => e.chain().focus().toggleBlockquote().run() },
+    { label: 'Code block', run: e => e.chain().focus().toggleCodeBlock().run() },
+    { label: 'Divider', run: e => e.chain().focus().setHorizontalRule().run() },
+  ];
+
   function link(current) {
     const previous = current.getAttributes('link').href || '';
     const url = window.prompt('Link URL', previous);
@@ -97,6 +117,17 @@ export default function SupportTiptapControl({ value, onChange, forID, className
 
   return (
     <div className={className} style={{ background: '#fff', minWidth: 0 }}>
+      {showBlocks && (
+        <div role="menu" aria-label="Insert block" style={{ border: '1px solid #e8edef', borderRadius: 8, padding: 8, maxWidth: 280, boxShadow: '0 8px 24px #00000016' }}>
+          {blocks.map(block => (
+            <button key={block.label} role="menuitem" type="button" onMouseDown={event => event.preventDefault()}
+              onClick={() => { block.run(editor); setShowBlocks(false); }}
+              style={{ display: 'block', width: '100%', padding: 10, textAlign: 'left', border: 0, background: 'white', cursor: 'pointer' }}>
+              {block.label}
+            </button>
+          ))}
+        </div>
+      )}
       {showTools && (
         <div
           role="toolbar"
