@@ -1,86 +1,75 @@
 import { MemoryRouter } from 'react-router-dom';
-import { render } from '@testing-library/react';
-import { fromJS } from 'immutable';
+import { act, fireEvent, render } from '@testing-library/react';
 
 import { Sidebar } from '../Sidebar';
 
-jest.mock('decap-cms-ui-default', () => {
-  const actual = jest.requireActual('decap-cms-ui-default');
-  return {
-    ...actual,
-    Icon: 'mocked-icon',
-  };
-});
+jest.mock('../../UI', () => ({
+  SettingsDropdown: () => <div data-testid="account-settings" />,
+}));
 
-jest.mock('../NestedCollection', () => 'nested-collection');
-jest.mock('../CollectionSearch', () => 'collection-search');
-jest.mock('../../../actions/collections');
-
-describe('Sidebar', () => {
-  const props = {
-    searchTerm: '',
-    isSearchEnabled: true,
-    t: jest.fn(key => key),
-  };
-  it('should render sidebar with a simple collection', () => {
-    const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();
-    const { asFragment, getByTestId } = render(
+describe('Support Manager Sidebar', () => {
+  function renderSidebar(props) {
+    return render(
       <MemoryRouter>
-        <Sidebar {...props} collections={collections} />
+        <Sidebar {...props} />
       </MemoryRouter>,
     );
+  }
 
-    expect(getByTestId('posts')).toHaveTextContent('Posts');
-    expect(getByTestId('posts')).toHaveAttribute('href', '/collections/posts');
+  it('renders the Support Manager navigation and account settings', () => {
+    const { getByText, getByTestId, getByRole } = renderSidebar({
+      user: { name: 'Editor' },
+    });
 
-    expect(asFragment()).toMatchSnapshot();
+    expect(getByText('Support Manager')).toBeInTheDocument();
+    expect(getByRole('link', { name: /Articles/ })).toHaveAttribute('href', '/collections/help');
+    expect(getByRole('link', { name: /New article/ })).toHaveAttribute(
+      'href',
+      '/collections/help/new',
+    );
+    expect(getByRole('link', { name: /Media library/ })).toHaveAttribute('href', '/media');
+    expect(getByText('Editor')).toBeInTheDocument();
+    expect(getByTestId('account-settings')).toBeInTheDocument();
   });
 
-  it('should not render a hidden collection', () => {
-    const collections = fromJS([{ name: 'posts', label: 'Posts', hide: true }]).toOrderedMap();
-    const { queryByTestId } = render(
-      <MemoryRouter>
-        <Sidebar {...props} collections={collections} />
-      </MemoryRouter>,
-    );
+  it('labels planned management features without making them navigation links', () => {
+    const { getByText, queryByRole } = renderSidebar();
 
-    expect(queryByTestId('posts')).toBeNull();
+    expect(getByText('Categories')).toBeInTheDocument();
+    expect(getByText('Revision history')).toBeInTheDocument();
+    expect(getByText('Insights')).toBeInTheDocument();
+    expect(queryByRole('link', { name: /Categories/ })).toBeNull();
   });
 
-  it('should render sidebar with a nested collection', () => {
-    const collections = fromJS([
-      { name: 'posts', label: 'Posts', nested: { depth: 10 } },
-    ]).toOrderedMap();
-    const { asFragment } = render(
-      <MemoryRouter>
-        <Sidebar {...props} collections={collections} />
-      </MemoryRouter>,
-    );
+  it('opens and closes the mobile navigation on the toggle event', () => {
+    const { container, getAllByLabelText } = renderSidebar();
 
-    expect(asFragment()).toMatchSnapshot();
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
+    expect(container.querySelector('#support-mobile-navigation')).toHaveClass('mobile-open');
+
+    fireEvent.click(getAllByLabelText('Close navigation')[0]);
+    expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
 
-  it('should render nested collection with filterTerm', () => {
-    const collections = fromJS([
-      { name: 'posts', label: 'Posts', nested: { depth: 10 } },
-    ]).toOrderedMap();
-    const { asFragment } = render(
-      <MemoryRouter>
-        <Sidebar {...props} collections={collections} filterTerm="dir1/dir2" />
-      </MemoryRouter>,
-    );
+  it('closes the mobile navigation when Escape is pressed', () => {
+    const { container } = renderSidebar();
 
-    expect(asFragment()).toMatchSnapshot();
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
 
-  it('should render sidebar without search', () => {
-    const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();
-    const { asFragment } = render(
-      <MemoryRouter>
-        <Sidebar {...props} collections={collections} isSearchEnabled={false} />
-      </MemoryRouter>,
-    );
+  it('closes the mobile navigation after selecting an article link', () => {
+    const { container, getByRole } = renderSidebar();
 
-    expect(asFragment()).toMatchSnapshot();
+    act(() => {
+      window.dispatchEvent(new Event('uo-support-toggle-navigation'));
+    });
+    fireEvent.click(getByRole('link', { name: /Articles/ }));
+    expect(container.querySelector('#support-mobile-navigation')).not.toHaveClass('mobile-open');
   });
 });

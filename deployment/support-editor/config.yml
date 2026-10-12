@@ -1,0 +1,27 @@
+# Development only. Requires a built fork bundle and Supabase Auth UI.
+backend:
+  name: supabase
+  supabase_url: https://pqinsgsatlsofpstdaie.supabase.co
+  # Set to the project's PUBLIC publishable key before staging.
+  supabase_anon_key: REPLACE_WITH_PUBLIC_PUBLISHABLE_KEY
+
+publish: true
+media_folder: "support-images"
+public_folder: "/support-images"
+collections:
+  - name: help
+    label: Help Articles
+    editor:
+      preview: false
+    folder: articles
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Category, name: category, widget: string, required: false }
+      - { label: Status, name: status, widget: select, options: [draft, published, archived], default: draft }
+      - { label: Body, name: body, widget: support-tiptap }

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { lengths } from 'decap-cms-ui-default';
 
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
@@ -11,8 +10,8 @@ const CollectionControlsContainer = styled.div`
   flex-flow: row-reverse wrap;
   align-items: center;
   gap: 6px 0;
-  margin-top: 22px;
-  width: ${lengths.topCardWidth};
+  margin: 0;
+  width: auto;
   max-width: 100%;
 
   @media (min-width: 500px) {

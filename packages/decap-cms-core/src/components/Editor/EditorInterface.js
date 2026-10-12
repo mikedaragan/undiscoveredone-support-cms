@@ -107,6 +107,16 @@ const StyledSplitPane = styled(SplitPane)`
    */
   .Pane {
     height: 100%;
+    min-width: 0;
+  }
+  @media (max-width: 799px) {
+    .Pane1 {
+      width: 100% !important;
+    }
+    .Pane2,
+    .Resizer {
+      display: none !important;
+    }
   }
 `;
 
@@ -116,14 +126,17 @@ const NoPreviewContainer = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
-  min-width: 800px;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  min-width: 0;
+  height: 100vh;
+  position: relative;
   overflow: hidden;
-  padding-top: 66px;
-  background-color: ${colors.background};
+  padding-top: 72px;
+  box-sizing: border-box;
+  background-color: #f6f8fa;
+  @media (max-width: 799px) {
+    height: 100dvh;
+    padding-top: 76px;
+  }
 `;
 
 const Editor = styled.div`
@@ -139,9 +152,14 @@ const PreviewPaneContainer = styled.div`
 `;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
-  padding: 0 16px;
+  padding: 28px clamp(16px, 3vw, 48px) 64px;
   position: relative;
   overflow-x: hidden;
+  background: #fff;
+  box-sizing: border-box;
+  @media (max-width: 799px) {
+    padding: 20px 16px 80px;
+  }
 `;
 
 const NotesPaneContainer = styled.div`
@@ -152,8 +170,11 @@ const NotesPaneContainer = styled.div`
 
 const ViewControls = styled.div`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 14px;
+  right: 14px;
+  @media (max-width: 799px) {
+    display: none;
+  }
   z-index: ${zIndex.zIndex299};
 `;
 

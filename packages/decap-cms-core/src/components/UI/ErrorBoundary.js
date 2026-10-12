@@ -139,6 +139,7 @@ export class ErrorBoundary extends Component {
     errorMessage: '',
     errorTitle: '',
     backup: '',
+    componentStack: '',
   };
 
   static getDerivedStateFromError(error) {
@@ -148,6 +149,11 @@ export class ErrorBoundary extends Component {
       errorMessage: error.stack || error.toString(),
       errorTitle: error.toString(),
     };
+  }
+
+  componentDidCatch(error, info) {
+    // Show the React component tree to identify the exact failing component.
+    this.setState({ componentStack: info?.componentStack || '' });
   }
 
   componentDidMount() {
@@ -173,7 +179,7 @@ export class ErrorBoundary extends Component {
   }
 
   render() {
-    const { hasError, errorMessage, backup, errorTitle } = this.state;
+    const { hasError, errorMessage, backup, errorTitle, componentStack } = this.state;
     const { showBackup, t } = this.props;
     if (!hasError) {
       return this.props.children;
@@ -204,7 +210,28 @@ export class ErrorBoundary extends Component {
         </p>
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
-        <p>{errorMessage}</p>
+        <p>
+          <strong>Error: {errorTitle}</strong>
+        </p>
+        {typeof window !== 'undefined' && window.__supportInvalidTag && (
+          <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+            {'Invalid DOM element: ' +
+              window.__supportInvalidTag +
+              '\n' +
+              (window.__supportInvalidTagStack || '')}
+          </pre>
+        )}
+        <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+          {errorMessage}
+        </pre>
+        {componentStack && (
+          <>
+            <h2>React component stack</h2>
+            <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13 }}>
+              {componentStack}
+            </pre>
+          </>
+        )}
         {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
       </ErrorBoundaryContainer>
     );

@@ -7,12 +7,19 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
 const baseWebpackConfig = getConfig({ baseOnly: true });
+baseWebpackConfig.resolve = {
+  ...baseWebpackConfig.resolve,
+  alias: {
+    ...baseWebpackConfig.resolve.alias,
+    'decap-cms-core$': path.resolve(__dirname, '../decap-cms-core/src/index.js'),
+    'decap-cms-app$': path.resolve(__dirname, '../decap-cms-app/src/index.js'),
+    'decap-cms-lib-util$': path.resolve(__dirname, '../decap-cms-lib-util/src/index.ts'),
+  },
+};
 
 const isProduction = process.env.NODE_ENV === 'production';
 console.log(`${pkg.version}${isProduction ? '' : '-dev'}`);
-
 const devServerPort = parseInt(process.env.DECAP_CMS_DEV_SERVER_PORT || `${8080}`);
-
 const baseConfig = {
   ...baseWebpackConfig,
   plugins: [
@@ -31,32 +38,19 @@ const baseConfig = {
   ],
   devServer: {
     static: '../../dev-test',
-    devMiddleware: {
-      publicPath: '/dist/',
-    },
+    devMiddleware: { publicPath: '/dist/' },
     host: '0.0.0.0',
     port: devServerPort,
-    client: {
-      overlay: false,
-    },
+    client: { overlay: false },
   },
 };
-
 if (isProduction) {
   module.exports = [
     baseConfig,
-
-    /**
-     * Output the same script a second time, but named `cms.js`, and with a
-     * deprecation notice.
-     */
     {
       ...baseConfig,
       entry: ['./shims/deprecate-old-dist.js', baseConfig.entry],
-      output: {
-        ...baseConfig.output,
-        filename: 'cms.js',
-      },
+      output: { ...baseConfig.output, filename: 'cms.js' },
     },
   ];
 } else {

@@ -1,4 +1,4 @@
-import { DecapCmsCore as CMS } from 'decap-cms-core';
+import { DecapCmsCore as CMS } from '../../decap-cms-core/src/index.js';
 import './extensions.js';
 
 // Log version

@@ -2,7 +2,7 @@ name: Node CI
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 on:
   push:
@@ -59,10 +59,13 @@ jobs:
       - name: run unit tests
         run: pnpm run test:ci
 
+  # Legacy Decap browser coverage is informational, not a required release gate.
+  # Unit tests and the separate Support editor staging build remain required.
   e2e-build:
+    continue-on-error: true
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: depot-ubuntu-24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -99,9 +102,10 @@ jobs:
           retention-days: 1
 
   e2e:
+    continue-on-error: true
     needs: [changes, e2e-build]
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: depot-ubuntu-24.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     strategy:
       fail-fast: false

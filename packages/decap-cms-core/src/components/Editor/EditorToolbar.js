@@ -19,7 +19,6 @@ import {
 } from 'decap-cms-ui-default';
 
 import { status } from '../../constants/publishModes';
-import { SettingsDropdown } from '../UI';
 
 const styles = {
   noOverflow: css`
@@ -37,8 +36,8 @@ const styles = {
     border: 0 solid ${colors.textFieldBorder};
   `,
   publishedButton: css`
-    background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.tealDark};
+    background-color: #e9edf8;
+    color: #354780;
   `,
 };
 
@@ -86,29 +85,40 @@ const DropdownButton = styled(StyledDropdownButton)`
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
     0 2px 54px rgba(0, 0, 0, 0.1);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  min-width: 800px;
+  right: 0;
+  width: 100vw;
+  min-width: 0;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
+  border-bottom: 1px solid #cdd5eb;
+  font-family: Satoshi, system-ui, sans-serif;
   height: 66px;
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box;
 `;
 
 const ToolbarSectionMain = styled.div`
   ${styles.toolbarSection};
-  flex: 10;
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
+  justify-content: flex-end;
+  padding: 0 16px 0 8px;
+  margin-left: auto;
+  @media (max-width: 700px) {
+    padding: 0 12px 0 4px;
+  }
 `;
 
 const ToolbarSubSectionFirst = styled.div`
   display: flex;
   align-items: center;
+  min-width: 0;
+  margin-left: auto;
 `;
 
 const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
@@ -117,6 +127,14 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
 
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
+  flex-shrink: 0;
+  @media (max-width: 700px) {
+    padding: 0 12px;
+    border-right-width: 0;
+    > div:last-child {
+      display: none;
+    }
+  }
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -127,17 +145,11 @@ const ToolbarSectionBackLink = styled(Link)`
   }
 `;
 
-const ToolbarSectionMeta = styled.div`
-  ${styles.toolbarSection};
-  border-left-width: 1px;
-  padding: 0 7px;
-`;
-
 const ToolbarDropdown = styled(Dropdown)`
   ${styles.buttonMargin};
 
   ${Icon} {
-    color: ${colorsRaw.teal};
+    color: #5265a8;
   }
 `;
 
@@ -146,6 +158,9 @@ const BackArrow = styled.div`
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
+  @media (max-width: 700px) {
+    margin-right: 0;
+  }
 `;
 
 const BackCollection = styled.div`
@@ -197,12 +212,12 @@ const PublishedButton = styled(ToolbarButton)`
 `;
 
 const PublishButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.teal};
+  background-color: #5265a8;
 `;
 
 const StatusButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.tealLight};
-  color: ${colorsRaw.teal};
+  background-color: #e9edf8;
+  color: #5265a8;
 `;
 
 const PreviewButtonContainer = styled.div`
@@ -679,20 +694,15 @@ export class EditorToolbar extends Component {
   };
 
   render() {
-    const {
-      user,
-      hasChanged,
-      displayUrl,
-      collection,
-      hasWorkflow,
-      onLogoutClick,
-      t,
-      editorBackLink,
-    } = this.props;
+    const { hasChanged, collection, hasWorkflow, t, editorBackLink } = this.props;
 
     return (
       <ToolbarContainer>
-        <ToolbarSectionBackLink to={editorBackLink}>
+        <ToolbarSectionBackLink
+          to={editorBackLink}
+          aria-label="Back to articles"
+          title="Back to articles"
+        >
           <BackArrow>←</BackArrow>
           <div>
             <BackCollection>
@@ -707,6 +717,38 @@ export class EditorToolbar extends Component {
             )}
           </div>
         </ToolbarSectionBackLink>
+        {collection.get('name') === 'help' && (
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: 5, paddingLeft: 8, flexShrink: 0 }}
+          >
+            {[
+              ['＋', 'Insert content', 'uo-support-toggle-insert'],
+              ['↶', 'Undo', 'uo-support-undo'],
+              ['↷', 'Redo', 'uo-support-redo'],
+              ['☷', 'Article settings', 'uo-support-toggle-settings'],
+            ].map(([symbol, label, eventName]) => (
+              <button
+                key={eventName}
+                type="button"
+                aria-label={label}
+                title={label}
+                onClick={() => window.dispatchEvent(new Event(eventName))}
+                style={{
+                  width: 32,
+                  height: 34,
+                  border: '1px solid #e2e8e9',
+                  borderRadius: 6,
+                  background: '#fff',
+                  color: '#254044',
+                  fontSize: 19,
+                  cursor: 'pointer',
+                }}
+              >
+                {symbol}
+              </button>
+            ))}
+          </div>
+        )}
         <ToolbarSectionMain>
           <ToolbarSubSectionFirst>
             {hasWorkflow ? this.renderWorkflowControls() : this.renderSimpleControls()}
@@ -717,13 +759,6 @@ export class EditorToolbar extends Component {
               : this.renderSimpleDeployPreviewControls()}
           </ToolbarSubSectionLast>
         </ToolbarSectionMain>
-        <ToolbarSectionMeta>
-          <SettingsDropdown
-            displayUrl={displayUrl}
-            imageUrl={user?.avatar_url}
-            onLogoutClick={onLogoutClick}
-          />
-        </ToolbarSectionMeta>
       </ToolbarContainer>
     );
   }
