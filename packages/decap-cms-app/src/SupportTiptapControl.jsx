@@ -42,15 +42,11 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   const [selectedBlock, setSelectedBlock] = React.useState(0);
   const [blockQuery, setBlockQuery] = React.useState('');
   const [menuPosition, setMenuPosition] = React.useState(null);
-  const [activeBlockIndex, setActiveBlockIndex] = React.useState(null);
   const editor = useEditor({
     extensions: baseExtensions,
     content: value || '',
     contentType: 'markdown',
     onUpdate: ({ editor: current }) => onChange(current.getMarkdown()),
-    onSelectionUpdate: ({ editor: current }) => {
-      setActiveBlockIndex(current.state.selection.$from.index(0));
-    },
     editorProps: {
       attributes: {
         id: forID,
@@ -124,18 +120,15 @@ export default function SupportTiptapControl({ value, onChange, forID, className
   function insertBlock(block) {
     if (!editor || !block) return;
     const { state } = editor;
-    const { $from } = state.selection;
-    // Resolve the nearest document-level block, including when inside a list.
-    const topLevelIndex = activeBlockIndex === null ? $from.index(0) : Math.min(activeBlockIndex, state.doc.childCount - 1);
-    const topLevelNode = state.doc.child(topLevelIndex);
-    const insertAt = state.doc.content.findIndex(topLevelIndex).offset + topLevelNode.nodeSize;
+    // The toolbar inserter appends a new top-level block to the document.
+    // Using the current selection here can insert at the top after focus moves to the menu.
+    const insertAt = state.doc.content.size;
     const content = block.type === 'bulletList' || block.type === 'orderedList'
       ? { type: block.type, content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }
       : block.type === 'blockquote'
         ? { type: 'blockquote', content: [{ type: 'paragraph' }] }
         : { type: block.type, ...(block.attrs ? { attrs: block.attrs } : {}) };
     editor.chain().insertContentAt(insertAt, content).focus(insertAt + 1).run();
-    setActiveBlockIndex(topLevelIndex + 1);
     setShowBlocks(false);
     setShowTools(false);
     setBlockQuery('');
