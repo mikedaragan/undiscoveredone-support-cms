@@ -99,22 +99,34 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     }
   }, [editor, value]);
 
+  // Insert a new block after the current top-level block instead of changing its type.
   const blocks = [
-    { label: 'Paragraph', run: e => e.chain().focus().setParagraph().run() },
-    { label: 'Heading 2', run: e => e.chain().focus().setHeading({ level: 2 }).run() },
-    { label: 'Heading 3', run: e => e.chain().focus().setHeading({ level: 3 }).run() },
-    { label: 'Bullet list', run: e => e.chain().focus().toggleBulletList().run() },
-    { label: 'Numbered list', run: e => e.chain().focus().toggleOrderedList().run() },
-    { label: 'Quote', run: e => e.chain().focus().toggleBlockquote().run() },
-    { label: 'Code block', run: e => e.chain().focus().toggleCodeBlock().run() },
-    { label: 'Divider', run: e => e.chain().focus().setHorizontalRule().run() },
+    { label: 'Paragraph', type: 'paragraph' },
+    { label: 'Heading 2', type: 'heading', attrs: { level: 2 } },
+    { label: 'Heading 3', type: 'heading', attrs: { level: 3 } },
+    { label: 'Bullet list', type: 'bulletList' },
+    { label: 'Numbered list', type: 'orderedList' },
+    { label: 'Quote', type: 'blockquote' },
+    { label: 'Code block', type: 'codeBlock' },
+    { label: 'Divider', type: 'horizontalRule' },
   ];
 
   const matchingBlocks = blocks.filter(block => block.label.toLowerCase().includes(blockQuery.toLowerCase()));
 
   function insertBlock(block) {
     if (!editor || !block) return;
-    block.run(editor);
+    const { state } = editor;
+    const { $from } = state.selection;
+    // Resolve the nearest document-level block, including when inside a list.
+    const topLevelIndex = $from.index(0);
+    const topLevelNode = state.doc.child(topLevelIndex);
+    const insertAt = $from.start(0) + state.doc.content.findIndex(topLevelIndex).offset + topLevelNode.nodeSize;
+    const content = block.type === 'bulletList' || block.type === 'orderedList'
+      ? { type: block.type, content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }
+      : block.type === 'blockquote'
+        ? { type: 'blockquote', content: [{ type: 'paragraph' }] }
+        : { type: block.type, ...(block.attrs ? { attrs: block.attrs } : {}) };
+    editor.chain().focus().insertContentAt(insertAt, content).run();
     setShowBlocks(false);
     setBlockQuery('');
   }
