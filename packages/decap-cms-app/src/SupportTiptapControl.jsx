@@ -43,6 +43,7 @@ export default function SupportTiptapControl({ value, onChange, forID, className
     extensions: baseExtensions,
     content: value || '',
     contentType: 'markdown',
+    onUpdate: ({ editor: current }) => onChange(current.getMarkdown()),
     editorProps: {
       attributes: {
         id: forID,
